@@ -2,11 +2,11 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>CarePilot</title>
-  <meta name="keywords" content="CarePilot, CareFlow, multi-agent framework, healthcare automation, long-horizon tasks, actor-critic, tool grounding, dual memory, VLM, DICOM, EHR, medical AI, CVPR 2026">
-  <meta name="description" content="CarePilot is a multi-agent framework for long-horizon computer task automation in healthcare, introducing CareFlow benchmark and achieving state-of-the-art performance.">
+  <title>MedFocusLeak</title>
+  <meta name="keywords" content="MedFocusLeak, adversarial attack, medical VLM, transferable attack, background perturbation, attention distraction, medical imaging, ACL 2026, VQA, radiology AI">
+  <meta name="description" content="MedFocusLeak is a novel transferable black-box adversarial attack on medical Vision-Language Models that forces incorrect diagnoses by perturbing non-diagnostic background regions and redirecting model attention.">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="author" content="Akash Ghosh, Tajamul Ashraf, Rishu Kumar Singh, Numan Saeed, Sriparna Saha, Xiuying Chen, Salman Khan">
+  <meta name="author" content="Akash Ghosh, Subhadip Baidya, Sriparna Saha, Xiuying Chen">
 
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-9KMFZMJ59F"></script>
   <script>
@@ -221,8 +221,7 @@
         <div class="column has-text-centered">
 
           <h1 class="title is-1 publication-title" style="display:flex;align-items:center;justify-content:center;gap:0.4em;flex-wrap:wrap;">
-            <span><img src="./static/images/icon.png" alt="CarePilot icon"
-                 style="height:1.1em;width:auto;vertical-align:middle;flex-shrink:0;">CarePilot: A Multi-Agent Framework for Long-Horizon Computer Task Automation in Healthcare</span>
+            <span>When Background Matters: Breaking Medical Vision Language Models by Transferable Attack</span>
           </h1>
 
           <div class="is-size-5 publication-authors" style="margin-top:1rem;">
@@ -244,23 +243,18 @@
           <div class="column has-text-centered" style="margin-top:1rem;">
             <div class="publication-links">
               <span class="link-block">
-                <a href="https://arxiv.org/pdf/2603.24157" class="external-link button is-normal is-rounded is-dark">
+                <a href="#" class="external-link button is-normal is-rounded is-dark">
                   <span class="icon"><i class="fas fa-file-pdf"></i></span><span>Paper</span>
                 </a>
               </span>
               <span class="link-block">
-                <a href="https://arxiv.org/abs/2603.24157" class="external-link button is-normal is-rounded is-dark">
+                <a href="#" class="external-link button is-normal is-rounded is-dark">
                   <span class="icon"><i class="ai ai-arxiv"></i></span><span>arXiv</span>
                 </a>
               </span>
               <span class="link-block">
-                <a href="https://github.com/AkashGhosh/CarePilot" class="external-link button is-normal is-rounded is-dark">
+                <a href="#" class="external-link button is-normal is-rounded is-dark">
                   <span class="icon"><i class="fab fa-github"></i></span><span>Code</span>
-                </a>
-              </span>
-              <span class="link-block">
-                <a href="https://huggingface.co/datasets/Agcs12/CareFlow" class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">&#129303;</span><span>Dataset</span>
                 </a>
               </span>
               <span class="link-block">
@@ -282,8 +276,8 @@
 <nav class="sticky-nav">
   <div class="nav-inner">
     <a href="#abstract">Abstract</a>
-    <a href="#framework">Framework</a>
-    <a href="#benchmark">CareFlow</a>
+    <a href="#framework">Method</a>
+    <a href="#benchmark">Dataset</a>
     <a href="#results">Results</a>
     <a href="#BibTeX">BibTeX</a>
   </div>
@@ -294,14 +288,11 @@
 <section class="section" style="padding-top:1.5rem;padding-bottom:1rem;">
   <div class="container is-max-desktop reveal">
     <figure class="image" style="margin:0 auto;">
-      <img src="./static/images/Careflow.png" alt="CarePilot Framework Overview"
+      <img src="./static/images/framework.png" alt="MedFocusLeak Framework Overview"
            style="width:100%;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,0.08);">
     </figure>
     <p class="figure-caption">
-      <strong>Figure 1.</strong> Overview of the <em>CarePilot</em> framework. An Actor–Critic multi-agent architecture governs
-      hierarchical decision-making for long-horizon healthcare workflows. At each step, the Actor observes the current interface,
-      integrates tool-grounding signals and dual-memory context, then predicts the next semantic action. The Critic evaluates
-      outcomes, provides corrective feedback, and updates both memory buffers.
+      <strong>Figure 1.</strong> Overview of the <em>MedFocusLeak</em> framework. The attack first generates a targeted adversarial text defining the malicious diagnostic objective and guides joint image–text optimization to synthesize a multimodal adversarial signal. The resulting perturbation is confined to non-diagnostic background regions to remain imperceptible while preserving clinical content. An attention-shift loss then explicitly redirects the model's visual focus toward these perturbed regions, causing the model to rely on malicious cues and produce an incorrect diagnosis.
     </p>
   </div>
 </section>
@@ -316,20 +307,7 @@
         <h2 class="title is-3 has-text-centered">Abstract</h2>
         <div class="content has-text-justified">
           <p>
-            Multimodal agentic pipelines are transforming human–computer interaction by enabling efficient and accessible
-            automation of complex, real-world tasks. However, recent efforts have focused on short-horizon or general-purpose
-            applications (e.g., mobile or desktop interfaces), leaving long-horizon automation for domain-specific systems,
-            particularly in healthcare, largely unexplored. To address this, we introduce <strong>CareFlow</strong>, a
-            high-quality human-annotated benchmark comprising complex, long-horizon software workflows across medical annotation
-            tools, DICOM viewers, EHR systems, and laboratory information systems. On this benchmark, existing vision–language
-            models (VLMs) perform poorly, struggling with long-horizon reasoning and multi-step interactions in medical contexts.
-            To overcome this, we propose <strong>CarePilot</strong>, a multi-agent framework based on the actor–critic paradigm.
-            The Actor integrates tool grounding with dual-memory mechanisms—long-term and short-term experience—to predict the
-            next semantic action from the visual interface and system state. The Critic evaluates each action, updates memory
-            based on observed effects, and either executes or provides corrective feedback to refine the workflow. Our experiments
-            show that <strong>CarePilot</strong> achieves state-of-the-art performance, outperforming strong closed-source and
-            open-source multimodal baselines by approximately <strong>15.26%</strong> and <strong>3.38%</strong> on our benchmark
-            and out-of-distribution dataset, respectively.
+            Vision-Language Models (VLMs) are increasingly used in clinical diagnostics, but their robustness to adversarial attacks is largely unexplored, posing serious risks. Existing medical image attacks mostly target secondary goals like model stealing or adversarial finetuning, while vanilla transferable attacks from natural images fail by introducing visible distortions that are easily detectable by clinicians. To address this, we propose <strong>MedFocusLeak</strong>, a novel and highly transferable black-box multimodal attack that forces incorrect medical diagnoses while ensuring perturbations remain imperceptible. The approach strategically introduces synergistic perturbations into non-diagnostic background regions of a medical image and uses an <em>Attention-Distract loss</em> to deliberately shift the model's diagnostic focus away from pathological areas. Through comprehensive evaluations on <strong>6 distinct medical imaging modalities</strong>, we demonstrate that MedFocusLeak attains state-of-the-art effectiveness, producing adversarial examples that elicit plausible but incorrect diagnostic outputs across a range of VLMs. We also propose a novel evaluation framework with new metrics that capture both the success of the misleading text generation and the quality preservation of the medical image in one statistical number. Our findings expose a systematic weakness in the reasoning capabilities of contemporary VLMs in clinical settings.
           </p>
         </div>
       </div>
@@ -344,7 +322,7 @@
     <div class="columns is-centered has-text-centered">
       <div class="column stat-item reveal">
         <div class="stat-number" data-target="1100">0</div>
-        <div class="stat-label">Tasks in CareFlow</div>
+        <div class="stat-label">Medical Images</div>
       </div>
       <div class="column stat-item reveal">
         <div class="stat-number" data-target="5">0</div>
@@ -371,12 +349,11 @@
 <section class="section" id="framework" style="padding-top:2rem;">
   <div class="container is-max-desktop">
     <hr class="section-divider">
-    <h2 class="title is-3 has-text-centered">How CarePilot Works</h2>
+    <h2 class="title is-3 has-text-centered">How MedFocusLeak Works</h2>
     <div class="columns is-centered" style="margin-bottom:1.5rem;">
       <div class="column is-four-fifths">
         <p class="has-text-centered has-text-grey" style="font-size:0.97rem;">
-          CarePilot is a memory- and tool-augmented multi-agent framework built on the actor–critic paradigm.
-          At each timestep <em>t</em>, the system runs through four tightly coupled stages.
+          MedFocusLeak integrates four technically grounded principles to generate stealthy, transferable adversarial medical images that corrupt model attention and induce clinically plausible misdiagnoses.
         </p>
       </div>
     </div>
@@ -386,71 +363,37 @@
 
       <div class="column is-half">
         <div class="framework-card reveal">
-          <div class="card-icon">🔍</div>
-          <h4>① Tool Grounding</h4>
-          <p>Before predicting any action, CarePilot enriches perception of the GUI using four lightweight tools:</p>
-          <ul style="margin-top:0.5rem;">
-            <li><strong>UI Object Detection</strong> — open-vocabulary bounding-box localization of widgets and panels.</li>
-            <li><strong>Zoom/Crop</strong> — magnifies fine-grained controls that are hard to parse at full resolution.</li>
-            <li><strong>OCR</strong> — extracts text–box pairs for patient IDs, series names, and LIS codes.</li>
-            <li><strong>Template/Icon Matching</strong> — identifies toolbar icons robustly across themes and locales.</li>
-          </ul>
-          <p style="margin-top:0.5rem;">All four outputs are fused into a perceptual grounding signal &phi;<sub>t</sub> that conditions both memory updates and action prediction.</p>
+          <div class="card-icon">🎯</div>
+          <h4>① Adversarial Text Generation</h4>
+          <p>Given a medical image <em>I</em> and prompt <em>x</em>, the attacker crafts a targeted adversarial prompt to produce a plausible but incorrect diagnosis <em>x<sub>adv</sub></em> using GPT-4o. Crucially, the adversarial output preserves the image's primary modality (e.g., "X-ray") while altering the reported clinical findings — shifting benign findings to malignant ones, or inverting severity.</p>
         </div>
       </div>
 
       <div class="column is-half">
         <div class="framework-card reveal">
-          <div class="card-icon">🧠</div>
-          <h4>② Dual-Memory Design</h4>
-          <p>Two complementary memories provide immediate and long-range context:</p>
-          <ul style="margin-top:0.5rem;">
-            <li>
-              <strong>Short-Term Memory (STM)</strong> — stores the previous screenshot, the action just executed, and the Critic's feedback.
-              Enables rapid correction of local errors.
-            </li>
-            <li>
-              <strong>Long-Term Memory (LTM)</strong> — maintains a compact rolling summary of the full trajectory updated with tool-grounding features &phi;<sub>t</sub>.
-              Prevents error accumulation and preserves semantic consistency across many steps.
-            </li>
-          </ul>
-          <p style="margin-top:0.5rem;">The Actor always conditions on both memories, giving it situational awareness at every timescale.</p>
+          <div class="card-icon">🔗</div>
+          <h4>② Multimodal Adversarial Representation</h4>
+          <p>A blank white seed image is initialised with adversarial text rendered as an overlay to establish cross-modal correspondence. Optimization alternates between modalities: image perturbations are updated via projected gradient descent to disrupt block-level visual representations, while adversarial text tokens are updated via greedy substitution to maximally disrupt cross-modal fusion representations.</p>
         </div>
       </div>
 
       <div class="column is-half">
         <div class="framework-card reveal">
-          <div class="card-icon">🎭</div>
-          <h4>③ Actor–Critic with Hierarchical Reflection</h4>
-          <p>Both agents share the same VLM backbone (Qwen-VL), differing only in role:</p>
-          <ul style="margin-top:0.5rem;">
-            <li><strong>Actor</strong> — samples the next semantic action from {<span class="action-tag">CLICK</span> <span class="action-tag">SCROLL</span> <span class="action-tag">ZOOM</span> <span class="action-tag">TEXT</span> <span class="action-tag">SEGMENT</span> <span class="action-tag">COMPLETE</span>}.</li>
-            <li><strong>Critic</strong> — scores the action. If rejected, it triggers three-level hierarchical reflection:
-              <ol style="margin-top:0.3rem;">
-                <li><em>Action Reflector</em> — detects local grounding errors (→ STM).</li>
-                <li><em>Trajectory Reflector</em> — diagnoses stalled progress (→ LTM).</li>
-                <li><em>Global Reflector</em> — checks full-trajectory goal consistency (→ LTM).</li>
-              </ol>
-            </li>
-          </ul>
+          <div class="card-icon">🖼️</div>
+          <h4>③ Background-Constrained Perturbation</h4>
+          <p>MedSAM segments and isolates the region of diagnostic interest. The top-<em>k</em>=10 largest background patches are selected via dynamic programming, and adversarial perturbations are applied exclusively there. Random sub-crops of the adversarial image are aligned to the multimodal adversarial target using an ensemble of four CLIP surrogate models, keeping core medical content untouched and perturbations imperceptible (ε = 16/255).</p>
         </div>
       </div>
 
       <div class="column is-half">
         <div class="framework-card reveal">
-          <div class="card-icon">🎓</div>
-          <h4>④ Training &amp; Inference</h4>
+          <div class="card-icon">👁️</div>
+          <h4>④ Attention Shift via Background Gate</h4>
           <p>
-            The Actor is fine-tuned on Critic-augmented trajectories via supervised fine-tuning (SFT),
-            internalizing the Critic's structured reasoning into its weights.
-          </p>
-          <p style="margin-top:0.75rem;">
-            At inference <em>only the Actor is retained</em> — given the GUI state, task instruction, and memory context,
-            it directly predicts the next action without the Critic, drastically reducing compute while
-            preserving all quality gains from hierarchical reflection.
+            An auxiliary attention-based loss explicitly intervenes in attention allocation. Cross-attention weights from the final multimodal fusion block are extracted and the attention distraction loss is minimized to suppress foreground attention and amplify background attention:
           </p>
           <div class="highlight-box" style="margin-top:1rem;">
-            Fine-tuned with LoRA (rank&nbsp;2, lora_alpha&nbsp;4) on Qwen-VL 2.5-7B / Qwen 3 VL-8B in 4-bit precision on NVIDIA A100 GPUs.
+            <strong>L<sub>attn</sub></strong> = log A<sub>fg</sub>(δ) − log A<sub>bg</sub>(δ). Minimizing this loss forces the model to anchor predictions on adversarially perturbed background regions rather than clinical evidence.
           </div>
         </div>
       </div>
@@ -460,56 +403,44 @@
 </section>
 
 
-<!-- ===================== CAREFLOW BENCHMARK ===================== -->
+<!-- ===================== DATASET ===================== -->
 <section class="section" id="benchmark" style="padding-top:1rem;">
   <div class="container is-max-desktop">
     <hr class="section-divider">
-    <h2 class="title is-3 has-text-centered">CareFlow Benchmark</h2>
+    <h2 class="title is-3 has-text-centered">Evaluation Dataset</h2>
 
-    <!-- platform tags -->
+    <!-- modality tags -->
     <div class="has-text-centered reveal" style="margin-bottom:1.5rem;">
-      <span class="tag is-medium" style="background:#eaf4ee;color:#1a6b3c;border:1px solid #b2d9c0;margin:3px;">🖥 Orthanc</span>
-      <span class="tag is-medium" style="background:#eaf4ee;color:#1a6b3c;border:1px solid #b2d9c0;margin:3px;">🩻 Weasis</span>
-      <span class="tag is-medium" style="background:#eaf4ee;color:#1a6b3c;border:1px solid #b2d9c0;margin:3px;">🧊 3D Slicer</span>
-      <span class="tag is-medium" style="background:#eaf4ee;color:#1a6b3c;border:1px solid #b2d9c0;margin:3px;">📋 OpenEMR</span>
-      <span class="tag is-medium" style="background:#eaf4ee;color:#1a6b3c;border:1px solid #b2d9c0;margin:3px;">🔬 OpenHospital</span>
+      <span class="tag is-medium" style="background:#eaf4ee;color:#1a6b3c;border:1px solid #b2d9c0;margin:3px;">🩻 X-ray</span>
+      <span class="tag is-medium" style="background:#eaf4ee;color:#1a6b3c;border:1px solid #b2d9c0;margin:3px;">🧠 MRI</span>
+      <span class="tag is-medium" style="background:#eaf4ee;color:#1a6b3c;border:1px solid #b2d9c0;margin:3px;">🔬 CT Scan</span>
+      <span class="tag is-medium" style="background:#eaf4ee;color:#1a6b3c;border:1px solid #b2d9c0;margin:3px;">🔭 Dermoscopy</span>
+      <span class="tag is-medium" style="background:#eaf4ee;color:#1a6b3c;border:1px solid #b2d9c0;margin:3px;">🫀 Mammography</span>
+      <span class="tag is-medium" style="background:#eaf4ee;color:#1a6b3c;border:1px solid #b2d9c0;margin:3px;">📡 Ultrasound</span>
     </div>
 
     <div class="columns is-centered">
       <div class="column is-four-fifths reveal">
         <div class="content has-text-justified">
           <p>
-            <strong>CareFlow</strong> is the first large-scale, human-annotated benchmark dedicated to long-horizon healthcare
-            software automation. It contains <strong>1,100 tasks</strong> (735 train / 315 test + 50 OOD), each paired with a
-            trajectory of <strong>8–24 consecutive GUI screenshots</strong>. Every screenshot is labeled with an interface-invariant
-            next-action from a six-primitive action space:
-            <span class="action-tag">CLICK</span>
-            <span class="action-tag">SCROLL</span>
-            <span class="action-tag">ZOOM</span>
-            <span class="action-tag">TEXT</span>
-            <span class="action-tag">SEGMENT</span>
-            <span class="action-tag">COMPLETE</span>.
+            We assembled a dataset of <strong>1,000 medical images</strong> with ground-truth findings drawn from publicly available sources including <strong>MIMIC-CXR</strong>, <strong>SkinCAP</strong>, and <strong>MedTrinity</strong>. The collection spans <strong>7 imaging modalities</strong> — X-ray, CT scan, MRI, dermoscopy, mammography, ultrasound — and covers 10 anatomical body parts. We evaluate transferability across <strong>6 VLMs</strong>: 2 open-source (Qwen2.5-VL 7B, InternVL 8B), 2 medical-specialized (MedVLM-R1, BioMedLLAMA-Vision), and 2 closed-source (GPT-5, Gemini-2.5-Pro-Thinking).
           </p>
         </div>
       </div>
     </div>
 
-    <!-- CareFlow sequence image -->
     <div class="columns is-centered reveal" style="margin-bottom:2rem;">
       <div class="column">
         <figure class="image" style="margin:0 auto;">
-          <img src="./static/images/Careflow_sequence.png" alt="CareFlow benchmark task sequence"
+          <img src="./static/images/qualitative.png" alt="Qualitative attack examples"
                style="width:100%;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,0.08);">
         </figure>
         <p class="figure-caption">
-          <strong>Figure 2.</strong> Example task trajectory from <em>CareFlow</em>. Each task pairs a natural-language goal
-          with a sequence of GUI screenshots representing authentic clinical workflows across DICOM viewers, annotation tools,
-          EMR/EHR, and LIS platforms.
+          <strong>Figure 2.</strong> Qualitative analysis of diagnostic misdirection induced by MedFocusLeak. In each example, the adversarial image (visually indistinguishable from the original) causes the VLM to generate a clinically plausible but incorrect diagnosis. Correct medical tokens are highlighted in <span style="color:green;font-weight:600;">green</span> and adversarially altered tokens in <span style="color:red;font-weight:600;">red</span>.
         </p>
       </div>
     </div>
 
-    
   </div>
 </section>
 
@@ -524,9 +455,10 @@
       <div class="column is-four-fifths reveal">
         <div class="content has-text-justified">
           <p>
-            We evaluate <strong>CarePilot</strong> against strong open- and closed-source multimodal baselines using two metrics:
-            <strong>Step-Wise Accuracy (SWA)</strong> — fraction of correct next-action predictions across all steps — and
-            <strong>Task Accuracy (TA)</strong> — fraction of tasks where every action is predicted correctly in order.
+            We evaluate <strong>MedFocusLeak</strong> against five leading targeted transfer-based adversarial attacks (AttackVLM, AttackBard, AnyAttack, M-Attack, FOA-Attack) using three metrics:
+            <strong>MTR</strong> — Medical Text adversarial Rate (LLM-as-judge diagnostic misdirection score),
+            <strong>AvgSim</strong> — average Med-CLIP cosine similarity between original and adversarial images (imperceptibility), and
+            <strong>MAS</strong> — Medical Attack Score, a unified geometric mean of both.
           </p>
         </div>
       </div>
@@ -535,137 +467,134 @@
     <!-- Tabs -->
     <div class="reveal">
       <div class="result-tabs">
-        <button class="tab-btn active" data-tab="tab-careflow">CareFlow (In-Distribution)</button>
-        <button class="tab-btn" data-tab="tab-ood">OOD — OpenHospital</button>
+        <button class="tab-btn active" data-tab="tab-main">Main Results</button>
+        <button class="tab-btn" data-tab="tab-ood">Human Evaluation</button>
         <button class="tab-btn" data-tab="tab-ablation">Ablation Study</button>
       </div>
 
-      <!-- Tab: CareFlow -->
-      <div class="tab-panel active" id="tab-careflow">
-        <p class="table-caption">Table 1. Results on CareFlow. Best results are <strong>bold</strong>; best among baselines are <u>underlined</u>. Green rows are our method.</p>
+      <!-- Tab: Main Results -->
+      <div class="tab-panel active" id="tab-main">
+        <p class="table-caption">Table 1. MTR / AvgSim / MAS across VLMs. Green row = MedFocusLeak (ours).</p>
         <div style="overflow-x:auto;">
           <table class="table is-bordered is-hoverable is-fullwidth"
                  style="font-size:0.82rem;border-collapse:collapse;text-align:center;">
             <thead>
               <tr style="background-color:#f5f5f5;">
-                <th rowspan="2" style="text-align:left;min-width:160px;vertical-align:middle;">Model</th>
-                <th colspan="2" style="border-bottom:2px solid #888;">Weasis</th>
-                <th colspan="2" style="border-bottom:2px solid #888;">3D Slicer</th>
-                <th colspan="2" style="border-bottom:2px solid #888;">Orthanc</th>
-                <th colspan="2" style="border-bottom:2px solid #888;">OpenEMR</th>
-                <th colspan="2" style="border-bottom:2px solid #888;background:#ebebeb;">Average</th>
+                <th rowspan="2" style="text-align:left;min-width:130px;vertical-align:middle;">Attack</th>
+                <th colspan="3" style="border-bottom:2px solid #888;">InternVL-8B</th>
+                <th colspan="3" style="border-bottom:2px solid #888;">QwenVL-7B</th>
+                <th colspan="3" style="border-bottom:2px solid #888;">BioMedLlama-Vision</th>
               </tr>
               <tr style="background-color:#f5f5f5;">
-                <th>SWA</th><th>TA</th>
-                <th>SWA</th><th>TA</th>
-                <th>SWA</th><th>TA</th>
-                <th>SWA</th><th>TA</th>
-                <th style="background:#ebebeb;">SWA</th><th style="background:#ebebeb;">TA</th>
+                <th>MTR</th><th>AvgSim</th><th>MAS</th>
+                <th>MTR</th><th>AvgSim</th><th>MAS</th>
+                <th>MTR</th><th>AvgSim</th><th>MAS</th>
               </tr>
             </thead>
             <tbody>
-              <tr><td style="text-align:left;">Qwen2.5 VL 32B</td><td>79.95</td><td>5.13</td><td>68.00</td><td>1.90</td><td>48.62</td><td>2.42</td><td>41.60</td><td>0.32</td><td>60.72</td><td>2.43</td></tr>
-              <tr><td style="text-align:left;">Llama 3.2 11B</td><td>86.03</td><td>10.26</td><td>76.47</td><td>4.60</td><td>69.58</td><td>13.58</td><td>62.56</td><td>11.47</td><td>75.65</td><td>9.50</td></tr>
-              <tr><td style="text-align:left;">Llama 4 Scout</td><td>84.34</td><td>10.26</td><td>78.47</td><td>2.70</td><td>88.56</td><td>23.90</td><td>85.55</td><td>21.79</td><td>85.65</td><td>13.50</td></tr>
-              <tr><td style="text-align:left;">Llama 4 Maverick</td><td>88.21</td><td>18.69</td><td>71.55</td><td>3.40</td><td>84.99</td><td>27.99</td><td>77.97</td><td>25.68</td><td>80.53</td><td>19.20</td></tr>
-              <tr><td style="text-align:left;">Qwen3 VL 235B</td><td>83.14</td><td>17.69</td><td>72.44</td><td>5.30</td><td>87.48</td><td>25.40</td><td>84.46</td><td>24.52</td><td>81.85</td><td>19.70</td></tr>
-              <tr><td style="text-align:left;">Mistral 3.2 VL 24B</td><td>88.15</td><td>5.13</td><td>64.81</td><td>0.67</td><td>68.44</td><td>0.79</td><td>61.43</td><td>0.00</td><td>70.65</td><td>1.67</td></tr>
-              <tr><td style="text-align:left;">Nemotron 12B VL</td><td>86.98</td><td>12.82</td><td>73.95</td><td>5.13</td><td>73.56</td><td>14.46</td><td>66.55</td><td>12.36</td><td>77.93</td><td>10.71</td></tr>
-              <tr><td style="text-align:left;">GPT-4o</td><td>85.30</td><td>20.00</td><td>77.50</td><td>27.37</td><td>88.50</td><td>26.67</td><td>85.10</td><td>27.50</td><td>83.13</td><td>25.40</td></tr>
-              <tr><td style="text-align:left;">GPT-5</td><td>88.72</td><td><u>31.25</u></td><td><u>81.42</u></td><td><u>37.90</u></td><td>86.92</td><td><u>46.67</u></td><td>83.82</td><td><u>31.25</u></td><td>85.22</td><td><u>36.19</u></td></tr>
-              <tr><td style="text-align:left;">Gemini 2.5 Pro</td><td>68.90</td><td>3.75</td><td>59.70</td><td>5.26</td><td>71.30</td><td>6.66</td><td>61.70</td><td>6.75</td><td>65.15</td><td>5.39</td></tr>
-              <tr style="background-color:#d4edda;font-weight:600;">
-                <td style="text-align:left;">CarePilot (Qwen 2.5 VL-7B)</td>
-                <td>90.38</td><td>40.00</td><td>82.09</td><td>54.75</td><td>93.80</td><td>55.00</td><td>90.18</td><td>56.70</td><td>88.05</td><td>48.90</td>
-              </tr>
+              <tr><td style="text-align:left;">Attack Bard</td><td>0.550</td><td>0.680</td><td>0.370</td><td>0.590</td><td>0.680</td><td>0.400</td><td>0.620</td><td>0.680</td><td>0.420</td></tr>
+              <tr><td style="text-align:left;">AnyAttack</td><td>0.540</td><td>0.790</td><td>0.420</td><td>0.660</td><td>0.790</td><td>0.520</td><td>0.570</td><td>0.790</td><td>0.450</td></tr>
+              <tr><td style="text-align:left;">AttackVLM</td><td>0.630</td><td>0.830</td><td>0.520</td><td>0.630</td><td>0.830</td><td>0.520</td><td>0.620</td><td>0.830</td><td>0.510</td></tr>
+              <tr><td style="text-align:left;">MAttack</td><td>0.690</td><td>0.750</td><td>0.518</td><td>0.660</td><td>0.750</td><td>0.490</td><td>0.560</td><td>0.750</td><td>0.420</td></tr>
+              <tr><td style="text-align:left;">FOA-Attack</td><td>0.630</td><td>0.590</td><td>0.370</td><td>0.640</td><td>0.590</td><td>0.370</td><td>0.590</td><td>0.590</td><td>0.340</td></tr>
               <tr style="background-color:#b8dfc5;font-weight:700;">
-                <td style="text-align:left;">CarePilot (Qwen 3 VL-8B)</td>
-                <td><strong>92.50</strong></td><td><strong>48.76</strong></td>
-                <td><strong>88.90</strong></td><td><strong>54.80</strong></td>
-                <td><strong>91.80</strong></td><td><strong>56.67</strong></td>
-                <td><strong>87.52</strong></td><td><strong>46.25</strong></td>
-                <td><strong>90.18</strong></td><td><strong>51.45</strong></td>
+                <td style="text-align:left;">MedFocusLeak</td>
+                <td><strong>0.790</strong></td><td><strong>0.850</strong></td><td><strong>0.670</strong></td>
+                <td><strong>0.750</strong></td><td><strong>0.850</strong></td><td><strong>0.630</strong></td>
+                <td><strong>0.680</strong></td><td><strong>0.850</strong></td><td><strong>0.570</strong></td>
               </tr>
             </tbody>
           </table>
         </div>
-      </div>
-
-      <!-- Tab: OOD -->
-      <div class="tab-panel" id="tab-ood">
-        <p class="table-caption">Table 2. Out-of-Distribution results on OpenHospital. Green rows denote CarePilot.</p>
-        <div style="max-width:420px;">
+        <div style="overflow-x:auto;margin-top:1rem;">
           <table class="table is-bordered is-hoverable is-fullwidth"
-                 style="font-size:0.85rem;border-collapse:collapse;text-align:center;">
+                 style="font-size:0.82rem;border-collapse:collapse;text-align:center;">
             <thead>
               <tr style="background-color:#f5f5f5;">
-                <th style="text-align:left;">Model</th><th>SWA</th><th>TA</th>
+                <th rowspan="2" style="text-align:left;min-width:130px;vertical-align:middle;">Attack</th>
+                <th colspan="3" style="border-bottom:2px solid #888;">Gemini 2.5 Pro Thinking</th>
+                <th colspan="3" style="border-bottom:2px solid #888;">MedVLM-R1</th>
+                <th colspan="3" style="border-bottom:2px solid #888;">GPT-5</th>
+              </tr>
+              <tr style="background-color:#f5f5f5;">
+                <th>MTR</th><th>AvgSim</th><th>MAS</th>
+                <th>MTR</th><th>AvgSim</th><th>MAS</th>
+                <th>MTR</th><th>AvgSim</th><th>MAS</th>
               </tr>
             </thead>
             <tbody>
-              <tr><td style="text-align:left;">Qwen2.5 VL 32B</td><td>71.74</td><td>12.72</td></tr>
-              <tr><td style="text-align:left;">Llama 3.2 11B</td><td>70.76</td><td>16.36</td></tr>
-              <tr><td style="text-align:left;">Llama 4 Scout</td><td>72.20</td><td>20.75</td></tr>
-              <tr><td style="text-align:left;">Llama 4 Maverick</td><td>73.71</td><td><u>27.27</u></td></tr>
-              <tr><td style="text-align:left;">Qwen3 VL 235B</td><td>75.18</td><td>25.46</td></tr>
-              <tr><td style="text-align:left;">Mistral 3.2 VL 24B</td><td>69.63</td><td>1.82</td></tr>
-              <tr><td style="text-align:left;">Nemotron 12B VL</td><td>72.90</td><td>18.18</td></tr>
-              <tr><td style="text-align:left;">Gemini 2.5 Pro</td><td>73.90</td><td>18.87</td></tr>
-              <tr><td style="text-align:left;">GPT-4o</td><td>74.63</td><td>25.48</td></tr>
-              <tr><td style="text-align:left;">GPT-5</td><td><u>79.70</u></td><td><u>34.80</u></td></tr>
-              <tr style="background-color:#d4edda;font-weight:600;">
-                <td style="text-align:left;">CarePilot (Qwen 2.5 VL-7B)</td><td>77.93</td><td>36.40</td>
-              </tr>
+              <tr><td style="text-align:left;">Attack Bard</td><td>0.350</td><td>0.680</td><td>0.230</td><td>0.290</td><td>0.680</td><td>0.190</td><td>0.370</td><td>0.680</td><td>0.250</td></tr>
+              <tr><td style="text-align:left;">AnyAttack</td><td>0.410</td><td>0.790</td><td>0.320</td><td>0.350</td><td>0.790</td><td>0.270</td><td>0.390</td><td>0.790</td><td>0.300</td></tr>
+              <tr><td style="text-align:left;">AttackVLM</td><td>0.330</td><td>0.830</td><td>0.270</td><td>0.320</td><td>0.830</td><td>0.266</td><td>0.400</td><td>0.830</td><td>0.330</td></tr>
+              <tr><td style="text-align:left;">MAttack</td><td>0.310</td><td>0.750</td><td>0.240</td><td>0.330</td><td>0.750</td><td>0.233</td><td>0.340</td><td>0.750</td><td>0.220</td></tr>
+              <tr><td style="text-align:left;">FOA-Attack</td><td>0.160</td><td>0.590</td><td>0.094</td><td>0.290</td><td>0.590</td><td>0.170</td><td>0.070</td><td>0.590</td><td>0.041</td></tr>
               <tr style="background-color:#b8dfc5;font-weight:700;">
-                <td style="text-align:left;">CarePilot (Qwen 3 VL-8B)</td><td><strong>79.27</strong></td><td><strong>38.18</strong></td>
+                <td style="text-align:left;">MedFocusLeak</td>
+                <td><strong>0.480</strong></td><td><strong>0.850</strong></td><td><strong>0.400</strong></td>
+                <td><strong>0.400</strong></td><td><strong>0.850</strong></td><td><strong>0.340</strong></td>
+                <td><strong>0.480</strong></td><td><strong>0.850</strong></td><td><strong>0.400</strong></td>
               </tr>
             </tbody>
           </table>
+        </div>
+        <div class="highlight-box" style="margin-top:1rem;">
+          On GPT-5, MedFocusLeak achieves a MAS of 0.408 — nearly doubling the strongest baseline (0.225). Even reasoning-oriented models (MedVLM-R1, Gemini 2.5 Pro Thinking) remain vulnerable.
+        </div>
+      </div>
+
+      <!-- Tab: Human Evaluation -->
+      <div class="tab-panel" id="tab-ood">
+        <p class="table-caption">Table 2. Human evaluation by three certified medical interns supervised by a senior expert. 1–5 scale. Cohen's κ = 0.82.</p>
+        <div style="max-width:460px;">
+          <table class="table is-bordered is-hoverable is-fullwidth"
+                 style="font-size:0.88rem;border-collapse:collapse;text-align:center;">
+            <thead>
+              <tr style="background-color:#f5f5f5;">
+                <th style="text-align:left;">Method</th><th>ATI ↑</th><th>IQP ↑</th><th>OHAS ↑</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td style="text-align:left;">MAttack</td><td>3.10</td><td>3.10</td><td>3.20</td></tr>
+              <tr><td style="text-align:left;">FOA-Attack</td><td>3.30</td><td>1.50</td><td>2.80</td></tr>
+              <tr style="background-color:#b8dfc5;font-weight:700;">
+                <td style="text-align:left;">MedFocusLeak</td><td><strong>3.94</strong></td><td><strong>3.50</strong></td><td><strong>3.75</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="highlight-box" style="margin-top:1rem;">
+          <strong>ATI</strong> = Adversarial Text Impact &nbsp;·&nbsp; <strong>IQP</strong> = Image Quality Preservation &nbsp;·&nbsp; <strong>OHAS</strong> = Overall Human Attack Score. MedFocusLeak ranks highest on all three dimensions, with FOA-Attack scoring particularly low on IQP (1.50) due to visible distortions.
         </div>
       </div>
 
       <!-- Tab: Ablation -->
       <div class="tab-panel" id="tab-ablation">
-        <p class="table-caption">Table 3. Ablation on contextual components (Qwen 2.5 VL-7B). TG = Tool Grounding, LTM = Long-Term Memory, STM = Short-Term Memory.</p>
-        <div style="max-width:380px;">
+        <p class="table-caption">Table 3. Ablation on key components (QwenVL-7B). Each component contributes meaningfully to the final MAS.</p>
+        <div style="max-width:420px;">
           <table class="table is-bordered is-hoverable is-fullwidth"
                  style="font-size:0.9rem;border-collapse:collapse;text-align:center;">
             <thead>
               <tr style="background-color:#f5f5f5;">
-                <th>TG</th><th>LTM</th><th>STM</th><th>SWA</th><th>TA</th>
+                <th style="text-align:left;">Setting</th><th>MTR</th><th>AvgSim</th><th>MAS</th>
               </tr>
             </thead>
             <tbody>
-              <tr><td>&#x2717;</td><td>&#x2713;</td><td>&#x2713;</td><td>73.20</td><td>9.37</td></tr>
-              <tr><td>&#x2713;</td><td>&#x2717;</td><td>&#x2713;</td><td>82.10</td><td>23.67</td></tr>
-              <tr><td>&#x2713;</td><td>&#x2713;</td><td>&#x2717;</td><td>80.40</td><td>30.42</td></tr>
+              <tr><td style="text-align:left;">Image perturbation only</td><td>0.47</td><td>0.79</td><td>0.37</td></tr>
+              <tr><td style="text-align:left;">Text perturbation only</td><td>0.62</td><td>0.81</td><td>0.50</td></tr>
+              <tr><td style="text-align:left;">Without attention shift</td><td>0.55</td><td>0.88</td><td>0.48</td></tr>
+              <tr><td style="text-align:left;">ε = 4</td><td>0.43</td><td>0.92</td><td>0.39</td></tr>
+              <tr><td style="text-align:left;">ε = 8</td><td>0.57</td><td>0.88</td><td>0.50</td></tr>
               <tr style="background-color:#b8dfc5;font-weight:700;">
-                <td>&#x2713;</td><td>&#x2713;</td><td>&#x2713;</td><td><strong>88.05</strong></td><td><strong>48.90</strong></td>
+                <td style="text-align:left;">MedFocusLeak (full, ε=16)</td><td><strong>0.74</strong></td><td>0.85</td><td><strong>0.63</strong></td>
               </tr>
             </tbody>
           </table>
         </div>
-        <div class="highlight-box" style="margin-top:1rem;max-width:520px;">
-          Tool Grounding is the most critical component — removing it drops task accuracy to 9.37%.
-          Long-Term Memory contributes more than Short-Term Memory when removed individually.
+        <div class="highlight-box" style="margin-top:1rem;">
+          The attention-shift component alone lifts MAS from 0.48 → 0.63 on QwenVL. Without multimodal noise (image-only), MAS drops to 0.37 — confirming that coordinated image-text perturbations are essential.
         </div>
       </div>
     </div>
-
-    <!-- Performance vs Steps figure -->
-    <!-- <div class="columns is-centered reveal" style="margin-top:2.5rem;">
-      <div class="column is-four-fifths">
-        <figure class="image" style="margin:0 auto;">
-          <img src="./static/images/results.png" alt="Performance vs Number of Steps"
-               style="width:100%;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,0.08);">
-        </figure>
-        <p class="figure-caption">
-          <strong>Figure 3.</strong> Performance vs. task length on CareFlow. Both CarePilot variants show a clear accuracy
-          decline as task length grows, with Qwen 3 VL-8B consistently outperforming Qwen 2.5 VL-7B across all ranges.
-          For tasks under 10 steps, accuracy exceeds 64%; beyond 20 steps, both models converge around 27%.
-        </p>
-      </div>
-    </div> -->
 
   </div>
 </section>
@@ -676,14 +605,11 @@
   <div class="container is-max-desktop content">
     <hr class="section-divider">
     <h2 class="title">BibTeX</h2>
-    <pre><code>@misc{ghosh2026carepilotmultiagentframeworklonghorizon,
-      title={CarePilot: A Multi-Agent Framework for Long-Horizon Computer Task Automation in Healthcare}, 
+    <pre><code>@inproceedings{ghosh2026medfocusleak,
+      title={When Background Matters: Breaking Medical Vision Language Models by Transferable Attack},
       author={Akash Ghosh and Tajamul Ashraf and Rishu Kumar Singh and Numan Saeed and Sriparna Saha and Xiuying Chen and Salman Khan},
+      booktitle={Proceedings of the 64th Annual Meeting of the Association for Computational Linguistics (ACL)},
       year={2026},
-      eprint={2603.24157},
-      archivePrefix={arXiv},
-      primaryClass={cs.CV},
-      url={https://arxiv.org/abs/2603.24157}, 
 }</code></pre>
   </div>
 </section>
@@ -693,10 +619,10 @@
 <footer class="footer">
   <div class="container">
     <div class="content has-text-centered">
-      <a class="icon-link" href="https://arxiv.org/abs/2603.24157">
+      <a class="icon-link" href="#">
         <i class="fas fa-file-pdf"></i>
       </a>
-      <a class="icon-link" href="https://github.com/AkashGhosh/CarePilot">
+      <a class="icon-link" href="#">
         <i class="fab fa-github"></i>
       </a>
     </div>
