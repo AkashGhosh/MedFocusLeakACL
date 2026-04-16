@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>CarePilot</title>
+  <meta name="keywords" content="CarePilot, CareFlow, multi-agent framework, healthcare automation, long-horizon tasks, actor-critic, tool grounding, dual memory, VLM, DICOM, EHR, medical AI, CVPR 2026">
+  <meta name="description" content="CarePilot is a multi-agent framework for long-horizon computer task automation in healthcare, introducing CareFlow benchmark and achieving state-of-the-art performance.">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Akash Ghosh, Tajamul Ashraf, Rishu Kumar Singh, Numan Saeed, Sriparna Saha, Xiuying Chen, Salman Khan">
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-9KMFZMJ59F"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-9KMFZMJ59F');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="shortcut icon" href="./static/images/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="./static/images/favicon.ico" type="image/x-icon">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+
+  <style>
+    /* ── Navbar ── */
+    .sticky-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid #e8e8e8;
+      padding: 0.6rem 0;
+    }
+    .sticky-nav .nav-inner {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    .sticky-nav a {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #444;
+      text-decoration: none;
+      padding: 0.25rem 0.1rem;
+      border-bottom: 2px solid transparent;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .sticky-nav a:hover { color: #2c7a4b; border-color: #2c7a4b; }
+
+    /* ── Stats strip ── */
+    .stats-strip {
+      background: linear-gradient(135deg, #1a6b3c 0%, #2c7a4b 50%, #3a9160 100%);
+      padding: 2rem 1rem;
+    }
+    .stat-item { text-align: center; color: #fff; }
+    .stat-number {
+      font-size: 2.6rem;
+      font-weight: 800;
+      line-height: 1;
+      font-family: 'Google Sans', sans-serif;
+    }
+    .stat-label {
+      font-size: 0.85rem;
+      opacity: 0.88;
+      margin-top: 0.3rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── Section styles ── */
+    .section-divider {
+      border: none;
+      border-top: 1px solid #e8e8e8;
+      margin: 0 0 2rem 0;
+    }
+    .figure-caption {
+      font-size: 0.93rem;
+      color: #555;
+      margin-top: 0.75rem;
+      text-align: center;
+    }
+    .table-caption {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 0.6rem;
+      color: #333;
+    }
+    table th, table td { vertical-align: middle !important; }
+
+    /* ── Framework cards ── */
+    .framework-card {
+      background: #fff;
+      border-radius: 12px;
+      border: 1px solid #e0e0e0;
+      padding: 1.5rem;
+      height: 100%;
+      transition: box-shadow 0.25s, transform 0.25s;
+    }
+    .framework-card:hover {
+      box-shadow: 0 8px 28px rgba(0,0,0,0.10);
+      transform: translateY(-3px);
+    }
+    .framework-card .card-icon {
+      font-size: 2rem;
+      margin-bottom: 0.75rem;
+    }
+    .framework-card h4 {
+      font-weight: 700;
+      font-size: 1.05rem;
+      margin-bottom: 0.5rem;
+      color: #1a6b3c;
+    }
+    .framework-card p, .framework-card li {
+      font-size: 0.92rem;
+      color: #444;
+      line-height: 1.6;
+    }
+
+    /* ── Pipeline steps ── */
+    .pipeline-steps { position: relative; }
+    .pipeline-step {
+      display: flex;
+      gap: 1.2rem;
+      margin-bottom: 1.8rem;
+      align-items: flex-start;
+    }
+    .step-badge {
+      flex-shrink: 0;
+      width: 2.4rem;
+      height: 2.4rem;
+      border-radius: 50%;
+      background: #1a6b3c;
+      color: #fff;
+      font-weight: 800;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 0.1rem;
+    }
+    .step-content h4 {
+      font-weight: 700;
+      color: #1a6b3c;
+      margin-bottom: 0.3rem;
+      font-size: 1rem;
+    }
+    .step-content p { font-size: 0.92rem; color: #444; line-height: 1.6; margin: 0; }
+
+    /* ── Tabs ── */
+    .result-tabs { border-bottom: 2px solid #ddd; margin-bottom: 1.5rem; }
+    .result-tabs .tab-btn {
+      background: none;
+      border: none;
+      padding: 0.6rem 1.4rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #666;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .result-tabs .tab-btn.active { color: #1a6b3c; border-bottom-color: #1a6b3c; }
+    .result-tabs .tab-btn:hover { color: #2c7a4b; }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ── Scroll reveal ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── Tag badges ── */
+    .action-tag {
+      display: inline-block;
+      background: #eaf4ee;
+      color: #1a6b3c;
+      border: 1px solid #b2d9c0;
+      border-radius: 4px;
+      padding: 0.1em 0.45em;
+      font-size: 0.82rem;
+      font-family: monospace;
+      margin: 0 1px;
+    }
+
+    /* ── Highlight box ── */
+    .highlight-box {
+      background: #eaf4ee;
+      border-left: 4px solid #1a6b3c;
+      border-radius: 0 8px 8px 0;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.95rem;
+      color: #2d2d2d;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===================== HERO ===================== -->
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+
+          <h1 class="title is-1 publication-title" style="display:flex;align-items:center;justify-content:center;gap:0.4em;flex-wrap:wrap;">
+            <span><img src="./static/images/icon.png" alt="CarePilot icon"
+                 style="height:1.1em;width:auto;vertical-align:middle;flex-shrink:0;">CarePilot: A Multi-Agent Framework for Long-Horizon Computer Task Automation in Healthcare</span>
+          </h1>
+
+          <div class="is-size-5 publication-authors" style="margin-top:1rem;">
+            <span class="author-block"><a href="https://scholar.google.com/citations?user=NWc6Pw8AAAAJ&hl=en">Akash Ghosh</a><sup>1</sup>,&nbsp;</span>
+            <span class="author-block"><a href="https://scholar.google.com/citations?user=n6fSkQ4AAAAJ&hl=en">Tajamul Ashraf</a><sup>2</sup>,&nbsp;</span>
+            <span class="author-block"><a href="https://scholar.google.com/citations?user=sIy2A7oAAAAJ&hl=en">Rishu Kumar Singh</a><sup>1</sup>,&nbsp;</span>
+            <span class="author-block"><a href="https://scholar.google.com/citations?user=VMPEU20AAAAJ&hl=en">Numan Saeed</a><sup>2</sup>,&nbsp;</span>
+            <span class="author-block"><a href="https://scholar.google.co.in/citations?user=Fj7jA_AAAAAJ&hl=en">Sriparna Saha</a><sup>1</sup>,&nbsp;</span>
+            <span class="author-block"><a href="https://scholar.google.com/citations?user=COUnAF4AAAAJ&hl=zh-CN">Xiuying Chen</a><sup>2</sup>,&nbsp;</span>
+            <span class="author-block"><a href="https://scholar.google.com/citations?user=M59O9lkAAAAJ&hl=en">Salman Khan</a><sup>2</sup></span>
+          </div>
+
+          <div class="is-size-6 publication-authors" style="margin-top:0.5rem;">
+            <span class="author-block"><sup>1</sup>Indian Institute of Technology Patna</span>
+            &emsp;
+            <span class="author-block"><sup>2</sup>Mohamed bin Zayed University of Artificial Intelligence</span>
+          </div>
+
+          <div class="column has-text-centered" style="margin-top:1rem;">
+            <div class="publication-links">
+              <span class="link-block">
+                <a href="https://arxiv.org/pdf/2603.24157" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="fas fa-file-pdf"></i></span><span>Paper</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="https://arxiv.org/abs/2603.24157" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="ai ai-arxiv"></i></span><span>arXiv</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="https://github.com/AkashGhosh/CarePilot" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="fab fa-github"></i></span><span>Code</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="https://huggingface.co/datasets/Agcs12/CareFlow" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">&#129303;</span><span>Dataset</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="#BibTeX" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="fas fa-quote-right"></i></span><span>Cite</span>
+                </a>
+              </span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===================== STICKY NAV ===================== -->
+<nav class="sticky-nav">
+  <div class="nav-inner">
+    <a href="#abstract">Abstract</a>
+    <a href="#framework">Framework</a>
+    <a href="#benchmark">CareFlow</a>
+    <a href="#results">Results</a>
+    <a href="#BibTeX">BibTeX</a>
+  </div>
+</nav>
+
+
+<!-- ===================== TEASER IMAGE ===================== -->
+<section class="section" style="padding-top:1.5rem;padding-bottom:1rem;">
+  <div class="container is-max-desktop reveal">
+    <figure class="image" style="margin:0 auto;">
+      <img src="./static/images/Careflow.png" alt="CarePilot Framework Overview"
+           style="width:100%;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,0.08);">
+    </figure>
+    <p class="figure-caption">
+      <strong>Figure 1.</strong> Overview of the <em>CarePilot</em> framework. An Actor–Critic multi-agent architecture governs
+      hierarchical decision-making for long-horizon healthcare workflows. At each step, the Actor observes the current interface,
+      integrates tool-grounding signals and dual-memory context, then predicts the next semantic action. The Critic evaluates
+      outcomes, provides corrective feedback, and updates both memory buffers.
+    </p>
+  </div>
+</section>
+
+
+<!-- ===================== ABSTRACT ===================== -->
+<section class="section" id="abstract" style="padding-top:1rem;">
+  <div class="container is-max-desktop">
+    <hr class="section-divider">
+    <div class="columns is-centered">
+      <div class="column is-four-fifths reveal">
+        <h2 class="title is-3 has-text-centered">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Multimodal agentic pipelines are transforming human–computer interaction by enabling efficient and accessible
+            automation of complex, real-world tasks. However, recent efforts have focused on short-horizon or general-purpose
+            applications (e.g., mobile or desktop interfaces), leaving long-horizon automation for domain-specific systems,
+            particularly in healthcare, largely unexplored. To address this, we introduce <strong>CareFlow</strong>, a
+            high-quality human-annotated benchmark comprising complex, long-horizon software workflows across medical annotation
+            tools, DICOM viewers, EHR systems, and laboratory information systems. On this benchmark, existing vision–language
+            models (VLMs) perform poorly, struggling with long-horizon reasoning and multi-step interactions in medical contexts.
+            To overcome this, we propose <strong>CarePilot</strong>, a multi-agent framework based on the actor–critic paradigm.
+            The Actor integrates tool grounding with dual-memory mechanisms—long-term and short-term experience—to predict the
+            next semantic action from the visual interface and system state. The Critic evaluates each action, updates memory
+            based on observed effects, and either executes or provides corrective feedback to refine the workflow. Our experiments
+            show that <strong>CarePilot</strong> achieves state-of-the-art performance, outperforming strong closed-source and
+            open-source multimodal baselines by approximately <strong>15.26%</strong> and <strong>3.38%</strong> on our benchmark
+            and out-of-distribution dataset, respectively.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===================== STATS STRIP =====================
+<section class="stats-strip" id="stats">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column stat-item reveal">
+        <div class="stat-number" data-target="1100">0</div>
+        <div class="stat-label">Tasks in CareFlow</div>
+      </div>
+      <div class="column stat-item reveal">
+        <div class="stat-number" data-target="5">0</div>
+        <div class="stat-label">Clinical Platforms</div>
+      </div>
+      <div class="column stat-item reveal">
+        <div class="stat-number" data-suffix="%">90.18</div>
+        <div class="stat-label">Step-Wise Accuracy</div>
+      </div>
+      <div class="column stat-item reveal">
+        <div class="stat-number" data-suffix="%">51.45</div>
+        <div class="stat-label">Task Accuracy</div>
+      </div>
+      <div class="column stat-item reveal">
+        <div class="stat-number" data-suffix="%" data-target="15">0</div>
+        <div class="stat-label">Gain over Best Baseline</div>
+      </div>
+    </div>
+  </div>
+</section> -->
+
+
+<!-- ===================== CAREPILOT FRAMEWORK ===================== -->
+<section class="section" id="framework" style="padding-top:2rem;">
+  <div class="container is-max-desktop">
+    <hr class="section-divider">
+    <h2 class="title is-3 has-text-centered">How CarePilot Works</h2>
+    <div class="columns is-centered" style="margin-bottom:1.5rem;">
+      <div class="column is-four-fifths">
+        <p class="has-text-centered has-text-grey" style="font-size:0.97rem;">
+          CarePilot is a memory- and tool-augmented multi-agent framework built on the actor–critic paradigm.
+          At each timestep <em>t</em>, the system runs through four tightly coupled stages.
+        </p>
+      </div>
+    </div>
+
+    <!-- Cards row 1 -->
+    <div class="columns is-multiline">
+
+      <div class="column is-half">
+        <div class="framework-card reveal">
+          <div class="card-icon">🔍</div>
+          <h4>① Tool Grounding</h4>
+          <p>Before predicting any action, CarePilot enriches perception of the GUI using four lightweight tools:</p>
+          <ul style="margin-top:0.5rem;">
+            <li><strong>UI Object Detection</strong> — open-vocabulary bounding-box localization of widgets and panels.</li>
+            <li><strong>Zoom/Crop</strong> — magnifies fine-grained controls that are hard to parse at full resolution.</li>
+            <li><strong>OCR</strong> — extracts text–box pairs for patient IDs, series names, and LIS codes.</li>
+            <li><strong>Template/Icon Matching</strong> — identifies toolbar icons robustly across themes and locales.</li>
+          </ul>
+          <p style="margin-top:0.5rem;">All four outputs are fused into a perceptual grounding signal &phi;<sub>t</sub> that conditions both memory updates and action prediction.</p>
+        </div>
+      </div>
+
+      <div class="column is-half">
+        <div class="framework-card reveal">
+          <div class="card-icon">🧠</div>
+          <h4>② Dual-Memory Design</h4>
+          <p>Two complementary memories provide immediate and long-range context:</p>
+          <ul style="margin-top:0.5rem;">
+            <li>
+              <strong>Short-Term Memory (STM)</strong> — stores the previous screenshot, the action just executed, and the Critic's feedback.
+              Enables rapid correction of local errors.
+            </li>
+            <li>
+              <strong>Long-Term Memory (LTM)</strong> — maintains a compact rolling summary of the full trajectory updated with tool-grounding features &phi;<sub>t</sub>.
+              Prevents error accumulation and preserves semantic consistency across many steps.
+            </li>
+          </ul>
+          <p style="margin-top:0.5rem;">The Actor always conditions on both memories, giving it situational awareness at every timescale.</p>
+        </div>
+      </div>
+
+      <div class="column is-half">
+        <div class="framework-card reveal">
+          <div class="card-icon">🎭</div>
+          <h4>③ Actor–Critic with Hierarchical Reflection</h4>
+          <p>Both agents share the same VLM backbone (Qwen-VL), differing only in role:</p>
+          <ul style="margin-top:0.5rem;">
+            <li><strong>Actor</strong> — samples the next semantic action from {<span class="action-tag">CLICK</span> <span class="action-tag">SCROLL</span> <span class="action-tag">ZOOM</span> <span class="action-tag">TEXT</span> <span class="action-tag">SEGMENT</span> <span class="action-tag">COMPLETE</span>}.</li>
+            <li><strong>Critic</strong> — scores the action. If rejected, it triggers three-level hierarchical reflection:
+              <ol style="margin-top:0.3rem;">
+                <li><em>Action Reflector</em> — detects local grounding errors (→ STM).</li>
+                <li><em>Trajectory Reflector</em> — diagnoses stalled progress (→ LTM).</li>
+                <li><em>Global Reflector</em> — checks full-trajectory goal consistency (→ LTM).</li>
+              </ol>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="column is-half">
+        <div class="framework-card reveal">
+          <div class="card-icon">🎓</div>
+          <h4>④ Training &amp; Inference</h4>
+          <p>
+            The Actor is fine-tuned on Critic-augmented trajectories via supervised fine-tuning (SFT),
+            internalizing the Critic's structured reasoning into its weights.
+          </p>
+          <p style="margin-top:0.75rem;">
+            At inference <em>only the Actor is retained</em> — given the GUI state, task instruction, and memory context,
+            it directly predicts the next action without the Critic, drastically reducing compute while
+            preserving all quality gains from hierarchical reflection.
+          </p>
+          <div class="highlight-box" style="margin-top:1rem;">
+            Fine-tuned with LoRA (rank&nbsp;2, lora_alpha&nbsp;4) on Qwen-VL 2.5-7B / Qwen 3 VL-8B in 4-bit precision on NVIDIA A100 GPUs.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ===================== CAREFLOW BENCHMARK ===================== -->
+<section class="section" id="benchmark" style="padding-top:1rem;">
+  <div class="container is-max-desktop">
+    <hr class="section-divider">
+    <h2 class="title is-3 has-text-centered">CareFlow Benchmark</h2>
+
+    <!-- platform tags -->
+    <div class="has-text-centered reveal" style="margin-bottom:1.5rem;">
+      <span class="tag is-medium" style="background:#eaf4ee;color:#1a6b3c;border:1px solid #b2d9c0;margin:3px;">🖥 Orthanc</span>
+      <span class="tag is-medium" style="background:#eaf4ee;color:#1a6b3c;border:1px solid #b2d9c0;margin:3px;">🩻 Weasis</span>
+      <span class="tag is-medium" style="background:#eaf4ee;color:#1a6b3c;border:1px solid #b2d9c0;margin:3px;">🧊 3D Slicer</span>
+      <span class="tag is-medium" style="background:#eaf4ee;color:#1a6b3c;border:1px solid #b2d9c0;margin:3px;">📋 OpenEMR</span>
+      <span class="tag is-medium" style="background:#eaf4ee;color:#1a6b3c;border:1px solid #b2d9c0;margin:3px;">🔬 OpenHospital</span>
+    </div>
+
+    <div class="columns is-centered">
+      <div class="column is-four-fifths reveal">
+        <div class="content has-text-justified">
+          <p>
+            <strong>CareFlow</strong> is the first large-scale, human-annotated benchmark dedicated to long-horizon healthcare
+            software automation. It contains <strong>1,100 tasks</strong> (735 train / 315 test + 50 OOD), each paired with a
+            trajectory of <strong>8–24 consecutive GUI screenshots</strong>. Every screenshot is labeled with an interface-invariant
+            next-action from a six-primitive action space:
+            <span class="action-tag">CLICK</span>
+            <span class="action-tag">SCROLL</span>
+            <span class="action-tag">ZOOM</span>
+            <span class="action-tag">TEXT</span>
+            <span class="action-tag">SEGMENT</span>
+            <span class="action-tag">COMPLETE</span>.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CareFlow sequence image -->
+    <div class="columns is-centered reveal" style="margin-bottom:2rem;">
+      <div class="column">
+        <figure class="image" style="margin:0 auto;">
+          <img src="./static/images/Careflow_sequence.png" alt="CareFlow benchmark task sequence"
+               style="width:100%;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,0.08);">
+        </figure>
+        <p class="figure-caption">
+          <strong>Figure 2.</strong> Example task trajectory from <em>CareFlow</em>. Each task pairs a natural-language goal
+          with a sequence of GUI screenshots representing authentic clinical workflows across DICOM viewers, annotation tools,
+          EMR/EHR, and LIS platforms.
+        </p>
+      </div>
+    </div>
+
+    
+  </div>
+</section>
+
+
+<!-- ===================== EXPERIMENTAL RESULTS ===================== -->
+<section class="section" id="results" style="padding-top:1rem;">
+  <div class="container is-max-desktop">
+    <hr class="section-divider">
+    <h2 class="title is-3 has-text-centered">Experimental Results</h2>
+
+    <div class="columns is-centered" style="margin-bottom:1rem;">
+      <div class="column is-four-fifths reveal">
+        <div class="content has-text-justified">
+          <p>
+            We evaluate <strong>CarePilot</strong> against strong open- and closed-source multimodal baselines using two metrics:
+            <strong>Step-Wise Accuracy (SWA)</strong> — fraction of correct next-action predictions across all steps — and
+            <strong>Task Accuracy (TA)</strong> — fraction of tasks where every action is predicted correctly in order.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="reveal">
+      <div class="result-tabs">
+        <button class="tab-btn active" data-tab="tab-careflow">CareFlow (In-Distribution)</button>
+        <button class="tab-btn" data-tab="tab-ood">OOD — OpenHospital</button>
+        <button class="tab-btn" data-tab="tab-ablation">Ablation Study</button>
+      </div>
+
+      <!-- Tab: CareFlow -->
+      <div class="tab-panel active" id="tab-careflow">
+        <p class="table-caption">Table 1. Results on CareFlow. Best results are <strong>bold</strong>; best among baselines are <u>underlined</u>. Green rows are our method.</p>
+        <div style="overflow-x:auto;">
+          <table class="table is-bordered is-hoverable is-fullwidth"
+                 style="font-size:0.82rem;border-collapse:collapse;text-align:center;">
+            <thead>
+              <tr style="background-color:#f5f5f5;">
+                <th rowspan="2" style="text-align:left;min-width:160px;vertical-align:middle;">Model</th>
+                <th colspan="2" style="border-bottom:2px solid #888;">Weasis</th>
+                <th colspan="2" style="border-bottom:2px solid #888;">3D Slicer</th>
+                <th colspan="2" style="border-bottom:2px solid #888;">Orthanc</th>
+                <th colspan="2" style="border-bottom:2px solid #888;">OpenEMR</th>
+                <th colspan="2" style="border-bottom:2px solid #888;background:#ebebeb;">Average</th>
+              </tr>
+              <tr style="background-color:#f5f5f5;">
+                <th>SWA</th><th>TA</th>
+                <th>SWA</th><th>TA</th>
+                <th>SWA</th><th>TA</th>
+                <th>SWA</th><th>TA</th>
+                <th style="background:#ebebeb;">SWA</th><th style="background:#ebebeb;">TA</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td style="text-align:left;">Qwen2.5 VL 32B</td><td>79.95</td><td>5.13</td><td>68.00</td><td>1.90</td><td>48.62</td><td>2.42</td><td>41.60</td><td>0.32</td><td>60.72</td><td>2.43</td></tr>
+              <tr><td style="text-align:left;">Llama 3.2 11B</td><td>86.03</td><td>10.26</td><td>76.47</td><td>4.60</td><td>69.58</td><td>13.58</td><td>62.56</td><td>11.47</td><td>75.65</td><td>9.50</td></tr>
+              <tr><td style="text-align:left;">Llama 4 Scout</td><td>84.34</td><td>10.26</td><td>78.47</td><td>2.70</td><td>88.56</td><td>23.90</td><td>85.55</td><td>21.79</td><td>85.65</td><td>13.50</td></tr>
+              <tr><td style="text-align:left;">Llama 4 Maverick</td><td>88.21</td><td>18.69</td><td>71.55</td><td>3.40</td><td>84.99</td><td>27.99</td><td>77.97</td><td>25.68</td><td>80.53</td><td>19.20</td></tr>
+              <tr><td style="text-align:left;">Qwen3 VL 235B</td><td>83.14</td><td>17.69</td><td>72.44</td><td>5.30</td><td>87.48</td><td>25.40</td><td>84.46</td><td>24.52</td><td>81.85</td><td>19.70</td></tr>
+              <tr><td style="text-align:left;">Mistral 3.2 VL 24B</td><td>88.15</td><td>5.13</td><td>64.81</td><td>0.67</td><td>68.44</td><td>0.79</td><td>61.43</td><td>0.00</td><td>70.65</td><td>1.67</td></tr>
+              <tr><td style="text-align:left;">Nemotron 12B VL</td><td>86.98</td><td>12.82</td><td>73.95</td><td>5.13</td><td>73.56</td><td>14.46</td><td>66.55</td><td>12.36</td><td>77.93</td><td>10.71</td></tr>
+              <tr><td style="text-align:left;">GPT-4o</td><td>85.30</td><td>20.00</td><td>77.50</td><td>27.37</td><td>88.50</td><td>26.67</td><td>85.10</td><td>27.50</td><td>83.13</td><td>25.40</td></tr>
+              <tr><td style="text-align:left;">GPT-5</td><td>88.72</td><td><u>31.25</u></td><td><u>81.42</u></td><td><u>37.90</u></td><td>86.92</td><td><u>46.67</u></td><td>83.82</td><td><u>31.25</u></td><td>85.22</td><td><u>36.19</u></td></tr>
+              <tr><td style="text-align:left;">Gemini 2.5 Pro</td><td>68.90</td><td>3.75</td><td>59.70</td><td>5.26</td><td>71.30</td><td>6.66</td><td>61.70</td><td>6.75</td><td>65.15</td><td>5.39</td></tr>
+              <tr style="background-color:#d4edda;font-weight:600;">
+                <td style="text-align:left;">CarePilot (Qwen 2.5 VL-7B)</td>
+                <td>90.38</td><td>40.00</td><td>82.09</td><td>54.75</td><td>93.80</td><td>55.00</td><td>90.18</td><td>56.70</td><td>88.05</td><td>48.90</td>
+              </tr>
+              <tr style="background-color:#b8dfc5;font-weight:700;">
+                <td style="text-align:left;">CarePilot (Qwen 3 VL-8B)</td>
+                <td><strong>92.50</strong></td><td><strong>48.76</strong></td>
+                <td><strong>88.90</strong></td><td><strong>54.80</strong></td>
+                <td><strong>91.80</strong></td><td><strong>56.67</strong></td>
+                <td><strong>87.52</strong></td><td><strong>46.25</strong></td>
+                <td><strong>90.18</strong></td><td><strong>51.45</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tab: OOD -->
+      <div class="tab-panel" id="tab-ood">
+        <p class="table-caption">Table 2. Out-of-Distribution results on OpenHospital. Green rows denote CarePilot.</p>
+        <div style="max-width:420px;">
+          <table class="table is-bordered is-hoverable is-fullwidth"
+                 style="font-size:0.85rem;border-collapse:collapse;text-align:center;">
+            <thead>
+              <tr style="background-color:#f5f5f5;">
+                <th style="text-align:left;">Model</th><th>SWA</th><th>TA</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td style="text-align:left;">Qwen2.5 VL 32B</td><td>71.74</td><td>12.72</td></tr>
+              <tr><td style="text-align:left;">Llama 3.2 11B</td><td>70.76</td><td>16.36</td></tr>
+              <tr><td style="text-align:left;">Llama 4 Scout</td><td>72.20</td><td>20.75</td></tr>
+              <tr><td style="text-align:left;">Llama 4 Maverick</td><td>73.71</td><td><u>27.27</u></td></tr>
+              <tr><td style="text-align:left;">Qwen3 VL 235B</td><td>75.18</td><td>25.46</td></tr>
+              <tr><td style="text-align:left;">Mistral 3.2 VL 24B</td><td>69.63</td><td>1.82</td></tr>
+              <tr><td style="text-align:left;">Nemotron 12B VL</td><td>72.90</td><td>18.18</td></tr>
+              <tr><td style="text-align:left;">Gemini 2.5 Pro</td><td>73.90</td><td>18.87</td></tr>
+              <tr><td style="text-align:left;">GPT-4o</td><td>74.63</td><td>25.48</td></tr>
+              <tr><td style="text-align:left;">GPT-5</td><td><u>79.70</u></td><td><u>34.80</u></td></tr>
+              <tr style="background-color:#d4edda;font-weight:600;">
+                <td style="text-align:left;">CarePilot (Qwen 2.5 VL-7B)</td><td>77.93</td><td>36.40</td>
+              </tr>
+              <tr style="background-color:#b8dfc5;font-weight:700;">
+                <td style="text-align:left;">CarePilot (Qwen 3 VL-8B)</td><td><strong>79.27</strong></td><td><strong>38.18</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tab: Ablation -->
+      <div class="tab-panel" id="tab-ablation">
+        <p class="table-caption">Table 3. Ablation on contextual components (Qwen 2.5 VL-7B). TG = Tool Grounding, LTM = Long-Term Memory, STM = Short-Term Memory.</p>
+        <div style="max-width:380px;">
+          <table class="table is-bordered is-hoverable is-fullwidth"
+                 style="font-size:0.9rem;border-collapse:collapse;text-align:center;">
+            <thead>
+              <tr style="background-color:#f5f5f5;">
+                <th>TG</th><th>LTM</th><th>STM</th><th>SWA</th><th>TA</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>&#x2717;</td><td>&#x2713;</td><td>&#x2713;</td><td>73.20</td><td>9.37</td></tr>
+              <tr><td>&#x2713;</td><td>&#x2717;</td><td>&#x2713;</td><td>82.10</td><td>23.67</td></tr>
+              <tr><td>&#x2713;</td><td>&#x2713;</td><td>&#x2717;</td><td>80.40</td><td>30.42</td></tr>
+              <tr style="background-color:#b8dfc5;font-weight:700;">
+                <td>&#x2713;</td><td>&#x2713;</td><td>&#x2713;</td><td><strong>88.05</strong></td><td><strong>48.90</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="highlight-box" style="margin-top:1rem;max-width:520px;">
+          Tool Grounding is the most critical component — removing it drops task accuracy to 9.37%.
+          Long-Term Memory contributes more than Short-Term Memory when removed individually.
+        </div>
+      </div>
+    </div>
+
+    <!-- Performance vs Steps figure -->
+    <!-- <div class="columns is-centered reveal" style="margin-top:2.5rem;">
+      <div class="column is-four-fifths">
+        <figure class="image" style="margin:0 auto;">
+          <img src="./static/images/results.png" alt="Performance vs Number of Steps"
+               style="width:100%;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,0.08);">
+        </figure>
+        <p class="figure-caption">
+          <strong>Figure 3.</strong> Performance vs. task length on CareFlow. Both CarePilot variants show a clear accuracy
+          decline as task length grows, with Qwen 3 VL-8B consistently outperforming Qwen 2.5 VL-7B across all ranges.
+          For tasks under 10 steps, accuracy exceeds 64%; beyond 20 steps, both models converge around 27%.
+        </p>
+      </div>
+    </div> -->
+
+  </div>
+</section>
+
+
+<!-- ===================== BIBTEX ===================== -->
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <hr class="section-divider">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>@misc{ghosh2026carepilotmultiagentframeworklonghorizon,
+      title={CarePilot: A Multi-Agent Framework for Long-Horizon Computer Task Automation in Healthcare}, 
+      author={Akash Ghosh and Tajamul Ashraf and Rishu Kumar Singh and Numan Saeed and Sriparna Saha and Xiuying Chen and Salman Khan},
+      year={2026},
+      eprint={2603.24157},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2603.24157}, 
+}</code></pre>
+  </div>
+</section>
+
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+      <a class="icon-link" href="https://arxiv.org/abs/2603.24157">
+        <i class="fas fa-file-pdf"></i>
+      </a>
+      <a class="icon-link" href="https://github.com/AkashGhosh/CarePilot">
+        <i class="fab fa-github"></i>
+      </a>
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content has-text-centered">
+          <p>
+            This website is licensed under a
+            <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+            Template from <a href="https://github.com/nerfies/nerfies.github.io">Nerfies</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<script>
+  /* ── Tabs ── */
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  /* ── Scroll reveal ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  /* ── Animated counters ── */
+  function animateCounter(el) {
+    const target = parseFloat(el.dataset.target || el.textContent);
+    const suffix = el.dataset.suffix || '';
+    const isFloat = !Number.isInteger(target);
+    const duration = 1400;
+    const start = performance.now();
+    (function step(now) {
+      const p = Math.min((now - start) / duration, 1);
+      const ease = 1 - Math.pow(1 - p, 3);
+      const val = target * ease;
+      el.textContent = (isFloat ? val.toFixed(2) : Math.round(val)) + suffix;
+      if (p < 1) requestAnimationFrame(step);
+    })(start);
+  }
+
+  const counterObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        animateCounter(e.target);
+        counterObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.5 });
+  document.querySelectorAll('.stat-number').forEach(el => counterObs.observe(el));
+
+  /* ── Smooth scroll for nav links ── */
+  document.querySelectorAll('.sticky-nav a').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
