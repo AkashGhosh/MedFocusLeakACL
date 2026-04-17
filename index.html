@@ -3,18 +3,10 @@
 <head>
   <meta charset="utf-8">
   <title>MedFocusLeak</title>
-  <meta name="keywords" content="MedFocusLeak, adversarial attack, medical VLM, transferable attack, background perturbation, attention distraction, medical imaging, ACL 2026, VQA, radiology AI">
-  <meta name="description" content="MedFocusLeak is a novel transferable black-box adversarial attack on medical Vision-Language Models that forces incorrect diagnoses by perturbing non-diagnostic background regions and redirecting model attention.">
+  <meta name="keywords" content="MedFocusLeak, adversarial attack, medical VLM, vision language model, transferable attack, background perturbation, attention distraction, ACL 2026">
+  <meta name="description" content="MedFocusLeak: A transferable black-box adversarial attack on medical Vision-Language Models that hijacks diagnostic reasoning via background perturbations and attention distraction.">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="author" content="Akash Ghosh, Subhadip Baidya, Sriparna Saha, Xiuying Chen">
-
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-9KMFZMJ59F"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-9KMFZMJ59F');
-  </script>
 
   <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
   <link rel="stylesheet" href="./static/css/bulma.min.css">
@@ -23,8 +15,6 @@
   <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
   <link rel="stylesheet" href="./static/css/index.css">
-  <link rel="shortcut icon" href="./static/images/favicon.ico" type="image/x-icon">
-  <link rel="icon" href="./static/images/favicon.ico" type="image/x-icon">
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script defer src="./static/js/fontawesome.all.min.js"></script>
@@ -33,6 +23,17 @@
   <script src="./static/js/index.js"></script>
 
   <style>
+    /* ── Brand colours ── */
+    :root {
+      --brand:      #9b1c1c;
+      --brand-mid:  #b91c1c;
+      --brand-lite: #fef2f2;
+      --brand-border: #fca5a5;
+      --brand-tag-bg: #fff1f2;
+      --brand-tag-border: #fecdd3;
+      --brand-tag-text: #9b1c1c;
+    }
+
     /* ── Navbar ── */
     .sticky-nav {
       position: sticky;
@@ -58,26 +59,19 @@
       border-bottom: 2px solid transparent;
       transition: color 0.2s, border-color 0.2s;
     }
-    .sticky-nav a:hover { color: #2c7a4b; border-color: #2c7a4b; }
+    .sticky-nav a:hover { color: var(--brand); border-color: var(--brand); }
 
-    /* ── Stats strip ── */
-    .stats-strip {
-      background: linear-gradient(135deg, #1a6b3c 0%, #2c7a4b 50%, #3a9160 100%);
-      padding: 2rem 1rem;
-    }
-    .stat-item { text-align: center; color: #fff; }
-    .stat-number {
-      font-size: 2.6rem;
-      font-weight: 800;
-      line-height: 1;
-      font-family: 'Google Sans', sans-serif;
-    }
-    .stat-label {
+    /* ── Venue badge ── */
+    .venue-badge {
+      display: inline-block;
+      background: var(--brand);
+      color: #fff;
+      font-weight: 700;
       font-size: 0.85rem;
-      opacity: 0.88;
-      margin-top: 0.3rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
+      padding: 0.25em 0.85em;
+      border-radius: 999px;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.75rem;
     }
 
     /* ── Section styles ── */
@@ -113,51 +107,18 @@
       box-shadow: 0 8px 28px rgba(0,0,0,0.10);
       transform: translateY(-3px);
     }
-    .framework-card .card-icon {
-      font-size: 2rem;
-      margin-bottom: 0.75rem;
-    }
+    .framework-card .card-icon { font-size: 2rem; margin-bottom: 0.75rem; }
     .framework-card h4 {
       font-weight: 700;
       font-size: 1.05rem;
       margin-bottom: 0.5rem;
-      color: #1a6b3c;
+      color: var(--brand);
     }
     .framework-card p, .framework-card li {
       font-size: 0.92rem;
       color: #444;
       line-height: 1.6;
     }
-
-    /* ── Pipeline steps ── */
-    .pipeline-steps { position: relative; }
-    .pipeline-step {
-      display: flex;
-      gap: 1.2rem;
-      margin-bottom: 1.8rem;
-      align-items: flex-start;
-    }
-    .step-badge {
-      flex-shrink: 0;
-      width: 2.4rem;
-      height: 2.4rem;
-      border-radius: 50%;
-      background: #1a6b3c;
-      color: #fff;
-      font-weight: 800;
-      font-size: 1rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-top: 0.1rem;
-    }
-    .step-content h4 {
-      font-weight: 700;
-      color: #1a6b3c;
-      margin-bottom: 0.3rem;
-      font-size: 1rem;
-    }
-    .step-content p { font-size: 0.92rem; color: #444; line-height: 1.6; margin: 0; }
 
     /* ── Tabs ── */
     .result-tabs { border-bottom: 2px solid #ddd; margin-bottom: 1.5rem; }
@@ -173,8 +134,8 @@
       margin-bottom: -2px;
       transition: color 0.2s, border-color 0.2s;
     }
-    .result-tabs .tab-btn.active { color: #1a6b3c; border-bottom-color: #1a6b3c; }
-    .result-tabs .tab-btn:hover { color: #2c7a4b; }
+    .result-tabs .tab-btn.active { color: var(--brand); border-bottom-color: var(--brand); }
+    .result-tabs .tab-btn:hover  { color: var(--brand-mid); }
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
 
@@ -186,12 +147,12 @@
     }
     .reveal.visible { opacity: 1; transform: translateY(0); }
 
-    /* ── Tag badges ── */
-    .action-tag {
+    /* ── Metric tag ── */
+    .metric-tag {
       display: inline-block;
-      background: #eaf4ee;
-      color: #1a6b3c;
-      border: 1px solid #b2d9c0;
+      background: var(--brand-tag-bg);
+      color: var(--brand-tag-text);
+      border: 1px solid var(--brand-tag-border);
       border-radius: 4px;
       padding: 0.1em 0.45em;
       font-size: 0.82rem;
@@ -201,14 +162,38 @@
 
     /* ── Highlight box ── */
     .highlight-box {
-      background: #eaf4ee;
-      border-left: 4px solid #1a6b3c;
+      background: var(--brand-lite);
+      border-left: 4px solid var(--brand);
       border-radius: 0 8px 8px 0;
       padding: 1rem 1.25rem;
       margin-bottom: 1.5rem;
       font-size: 0.95rem;
       color: #2d2d2d;
     }
+
+    /* ── Stats strip ── */
+    .stats-strip {
+      background: linear-gradient(135deg, #7f1d1d 0%, #9b1c1c 50%, #b91c1c 100%);
+      padding: 2rem 1rem;
+    }
+    .stat-item { text-align: center; color: #fff; }
+    .stat-number {
+      font-size: 2.6rem;
+      font-weight: 800;
+      line-height: 1;
+      font-family: 'Google Sans', sans-serif;
+    }
+    .stat-label {
+      font-size: 0.85rem;
+      opacity: 0.88;
+      margin-top: 0.3rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── Best-row highlight ── */
+    tr.best-row { background-color: #fee2e2 !important; font-weight: 700; }
+    tr.ours-row { background-color: #fecaca !important; font-weight: 700; }
   </style>
 </head>
 <body>
@@ -220,40 +205,49 @@
       <div class="columns is-centered">
         <div class="column has-text-centered">
 
-          <h1 class="title is-1 publication-title" style="display:flex;align-items:center;justify-content:center;gap:0.4em;flex-wrap:wrap;">
-            <span>When Background Matters: Breaking Medical Vision Language Models by Transferable Attack</span>
+          <div><span class="venue-badge">ACL 2026 Main</span></div>
+
+          <h1 class="title is-2 publication-title" style="margin-top:0.4rem;">
+            When Background Matters: Breaking Medical Vision Language Models by Transferable Attack
           </h1>
 
           <div class="is-size-5 publication-authors" style="margin-top:1rem;">
-            <span class="author-block"><a href="https://scholar.google.com/citations?user=NWc6Pw8AAAAJ&hl=en">Akash Ghosh</a><sup>1</sup>,&nbsp;</span>
-            <span class="author-block"><a href="https://scholar.google.com/citations?user=n6fSkQ4AAAAJ&hl=en">Tajamul Ashraf</a><sup>2</sup>,&nbsp;</span>
-            <span class="author-block"><a href="https://scholar.google.com/citations?user=sIy2A7oAAAAJ&hl=en">Rishu Kumar Singh</a><sup>1</sup>,&nbsp;</span>
-            <span class="author-block"><a href="https://scholar.google.com/citations?user=VMPEU20AAAAJ&hl=en">Numan Saeed</a><sup>2</sup>,&nbsp;</span>
-            <span class="author-block"><a href="https://scholar.google.co.in/citations?user=Fj7jA_AAAAAJ&hl=en">Sriparna Saha</a><sup>1</sup>,&nbsp;</span>
-            <span class="author-block"><a href="https://scholar.google.com/citations?user=COUnAF4AAAAJ&hl=zh-CN">Xiuying Chen</a><sup>2</sup>,&nbsp;</span>
-            <span class="author-block"><a href="https://scholar.google.com/citations?user=M59O9lkAAAAJ&hl=en">Salman Khan</a><sup>2</sup></span>
+            <span class="author-block">
+              <a href="https://scholar.google.com/citations?user=NWc6Pw8AAAAJ&hl=en">Akash Ghosh</a><sup>1</sup>,&nbsp;
+            </span>
+            <span class="author-block">
+              <a href="https://scholar.google.com/">Subhadip Baidya</a><sup>2</sup>,&nbsp;
+            </span>
+            <span class="author-block">
+              <a href="https://scholar.google.co.in/citations?user=Fj7jA_AAAAAJ&hl=en">Sriparna Saha</a><sup>1</sup>,&nbsp;
+            </span>
+            <span class="author-block">
+              <a href="https://scholar.google.com/citations?user=COUnAF4AAAAJ&hl=zh-CN">Xiuying Chen</a><sup>3</sup>
+            </span>
           </div>
 
           <div class="is-size-6 publication-authors" style="margin-top:0.5rem;">
             <span class="author-block"><sup>1</sup>Indian Institute of Technology Patna</span>
             &emsp;
-            <span class="author-block"><sup>2</sup>Mohamed bin Zayed University of Artificial Intelligence</span>
+            <span class="author-block"><sup>2</sup>Indian Institute of Technology Kanpur</span>
+            &emsp;
+            <span class="author-block"><sup>3</sup>Mohamed bin Zayed University of Artificial Intelligence</span>
           </div>
 
           <div class="column has-text-centered" style="margin-top:1rem;">
             <div class="publication-links">
               <span class="link-block">
-                <a href="#" class="external-link button is-normal is-rounded is-dark">
+                <a href="https://arxiv.org/pdf/0000.00000" class="external-link button is-normal is-rounded is-dark">
                   <span class="icon"><i class="fas fa-file-pdf"></i></span><span>Paper</span>
                 </a>
               </span>
               <span class="link-block">
-                <a href="#" class="external-link button is-normal is-rounded is-dark">
+                <a href="https://arxiv.org/abs/0000.00000" class="external-link button is-normal is-rounded is-dark">
                   <span class="icon"><i class="ai ai-arxiv"></i></span><span>arXiv</span>
                 </a>
               </span>
               <span class="link-block">
-                <a href="#" class="external-link button is-normal is-rounded is-dark">
+                <a href="https://github.com/" class="external-link button is-normal is-rounded is-dark">
                   <span class="icon"><i class="fab fa-github"></i></span><span>Code</span>
                 </a>
               </span>
@@ -276,23 +270,55 @@
 <nav class="sticky-nav">
   <div class="nav-inner">
     <a href="#abstract">Abstract</a>
-    <a href="#framework">Method</a>
-    <a href="#benchmark">Dataset</a>
+    <a href="#framework">Framework</a>
+    <a href="#dataset">Dataset &amp; Setup</a>
     <a href="#results">Results</a>
     <a href="#BibTeX">BibTeX</a>
   </div>
 </nav>
 
 
-<!-- ===================== TEASER IMAGE ===================== -->
-<section class="section" style="padding-top:1.5rem;padding-bottom:1rem;">
+<!-- ===================== STATS STRIP ===================== -->
+<section class="stats-strip">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column stat-item reveal">
+        <div class="stat-number" data-target="6">0</div>
+        <div class="stat-label">Target VLMs</div>
+      </div>
+      <div class="column stat-item reveal">
+        <div class="stat-number" data-target="7">0</div>
+        <div class="stat-label">Medical Modalities</div>
+      </div>
+      <div class="column stat-item reveal">
+        <div class="stat-number" data-target="1000">0</div>
+        <div class="stat-label">Medical Images</div>
+      </div>
+      <div class="column stat-item reveal">
+        <div class="stat-number" data-suffix="×" data-target="2">0</div>
+        <div class="stat-label">MAS Gain on GPT-5</div>
+      </div>
+      <div class="column stat-item reveal">
+        <div class="stat-number" data-target="5">0</div>
+        <div class="stat-label">Baselines Beaten</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===================== TEASER / FRAMEWORK FIGURE ===================== -->
+<section class="section" style="padding-top:2rem;padding-bottom:1rem;">
   <div class="container is-max-desktop reveal">
     <figure class="image" style="margin:0 auto;">
       <img src="./static/images/framework.png" alt="MedFocusLeak Framework Overview"
            style="width:100%;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,0.08);">
     </figure>
     <p class="figure-caption">
-      <strong>Figure 1.</strong> Overview of the <em>MedFocusLeak</em> framework. The attack first generates a targeted adversarial text defining the malicious diagnostic objective and guides joint image–text optimization to synthesize a multimodal adversarial signal. The resulting perturbation is confined to non-diagnostic background regions to remain imperceptible while preserving clinical content. An attention-shift loss then explicitly redirects the model's visual focus toward these perturbed regions, causing the model to rely on malicious cues and produce an incorrect diagnosis.
+      <strong>Figure 1.</strong> Overview of the <em>MedFocusLeak</em> framework. The attack first generates a targeted
+      adversarial text defining the malicious diagnostic objective, then jointly optimizes image and text perturbations
+      confined to non-diagnostic background regions. An attention-shift loss explicitly redirects the model's visual
+      focus toward the perturbed background, causing it to produce confident yet clinically incorrect diagnoses.
     </p>
   </div>
 </section>
@@ -307,7 +333,24 @@
         <h2 class="title is-3 has-text-centered">Abstract</h2>
         <div class="content has-text-justified">
           <p>
-            Vision-Language Models (VLMs) are increasingly used in clinical diagnostics, but their robustness to adversarial attacks is largely unexplored, posing serious risks. Existing medical image attacks mostly target secondary goals like model stealing or adversarial finetuning, while vanilla transferable attacks from natural images fail by introducing visible distortions that are easily detectable by clinicians. To address this, we propose <strong>MedFocusLeak</strong>, a novel and highly transferable black-box multimodal attack that forces incorrect medical diagnoses while ensuring perturbations remain imperceptible. The approach strategically introduces synergistic perturbations into non-diagnostic background regions of a medical image and uses an <em>Attention-Distract loss</em> to deliberately shift the model's diagnostic focus away from pathological areas. Through comprehensive evaluations on <strong>6 distinct medical imaging modalities</strong>, we demonstrate that MedFocusLeak attains state-of-the-art effectiveness, producing adversarial examples that elicit plausible but incorrect diagnostic outputs across a range of VLMs. We also propose a novel evaluation framework with new metrics that capture both the success of the misleading text generation and the quality preservation of the medical image in one statistical number. Our findings expose a systematic weakness in the reasoning capabilities of contemporary VLMs in clinical settings.
+            Vision-Language Models (VLMs) are increasingly used in clinical diagnostics, but their robustness to
+            adversarial attacks is largely unexplored, posing serious risks. Existing medical image attacks mostly
+            target secondary goals like model stealing or adversarial finetuning, while vanilla transferable attacks
+            from natural images fail by introducing visible distortions that are easily detectable by clinicians.
+          </p>
+          <p>
+            To address this, we propose <strong>MedFocusLeak</strong>, a novel and highly transferable black-box
+            multimodal attack that forces incorrect medical diagnoses while ensuring perturbations remain imperceptible.
+            The approach strategically introduces synergistic perturbations into non-diagnostic <em>background regions</em>
+            of a medical image and uses an <strong>Attention-Distract loss</strong> to deliberately shift the model's
+            diagnostic focus away from pathological areas.
+          </p>
+          <p>
+            Through comprehensive evaluations on <strong>6 distinct medical imaging modalities</strong>, we demonstrate
+            that MedFocusLeak attains state-of-the-art effectiveness, producing adversarial examples that elicit
+            plausible but incorrect diagnostic outputs across a range of VLMs — including GPT-5 and Gemini 2.5 Pro
+            Thinking. We also propose a novel evaluation framework with new metrics that capture both the success
+            of misleading text generation and image quality preservation in one statistical number.
           </p>
         </div>
       </div>
@@ -316,56 +359,36 @@
 </section>
 
 
-<!-- ===================== STATS STRIP =====================
-<section class="stats-strip" id="stats">
-  <div class="container is-max-desktop">
-    <div class="columns is-centered has-text-centered">
-      <div class="column stat-item reveal">
-        <div class="stat-number" data-target="1100">0</div>
-        <div class="stat-label">Medical Images</div>
-      </div>
-      <div class="column stat-item reveal">
-        <div class="stat-number" data-target="5">0</div>
-        <div class="stat-label">Clinical Platforms</div>
-      </div>
-      <div class="column stat-item reveal">
-        <div class="stat-number" data-suffix="%">90.18</div>
-        <div class="stat-label">Step-Wise Accuracy</div>
-      </div>
-      <div class="column stat-item reveal">
-        <div class="stat-number" data-suffix="%">51.45</div>
-        <div class="stat-label">Task Accuracy</div>
-      </div>
-      <div class="column stat-item reveal">
-        <div class="stat-number" data-suffix="%" data-target="15">0</div>
-        <div class="stat-label">Gain over Best Baseline</div>
-      </div>
-    </div>
-  </div>
-</section> -->
-
-
-<!-- ===================== CAREPILOT FRAMEWORK ===================== -->
-<section class="section" id="framework" style="padding-top:2rem;">
+<!-- ===================== FRAMEWORK ===================== -->
+<section class="section" id="framework" style="padding-top:1rem;">
   <div class="container is-max-desktop">
     <hr class="section-divider">
     <h2 class="title is-3 has-text-centered">How MedFocusLeak Works</h2>
     <div class="columns is-centered" style="margin-bottom:1.5rem;">
       <div class="column is-four-fifths">
         <p class="has-text-centered has-text-grey" style="font-size:0.97rem;">
-          MedFocusLeak integrates four technically grounded principles to generate stealthy, transferable adversarial medical images that corrupt model attention and induce clinically plausible misdiagnoses.
+          MedFocusLeak corrupts a model's internal visual focus rather than just its output — forcing attention
+          onto adversarially perturbed background regions while ignoring pathological evidence. Four tightly
+          coupled stages drive the attack.
         </p>
       </div>
     </div>
 
-    <!-- Cards row 1 -->
     <div class="columns is-multiline">
 
       <div class="column is-half">
         <div class="framework-card reveal">
-          <div class="card-icon">🎯</div>
+          <div class="card-icon">📝</div>
           <h4>① Adversarial Text Generation</h4>
-          <p>Given a medical image <em>I</em> and prompt <em>x</em>, the attacker crafts a targeted adversarial prompt to produce a plausible but incorrect diagnosis <em>x<sub>adv</sub></em> using GPT-4o. Crucially, the adversarial output preserves the image's primary modality (e.g., "X-ray") while altering the reported clinical findings — shifting benign findings to malignant ones, or inverting severity.</p>
+          <p>
+            Given a medical image and clinical prompt, an attacker first crafts a targeted adversarial prompt using
+            GPT-4o to produce a plausible but incorrect diagnosis. The adversarial output preserves the image's
+            primary modality (e.g., "X-ray") while altering the reported clinical findings — for example,
+            escalating a benign nodule to a malignant mass.
+          </p>
+          <p style="margin-top:0.75rem;">
+            This adversarial text becomes the <em>semantic anchor</em> that steers all subsequent optimization.
+          </p>
         </div>
       </div>
 
@@ -373,27 +396,55 @@
         <div class="framework-card reveal">
           <div class="card-icon">🔗</div>
           <h4>② Multimodal Adversarial Representation</h4>
-          <p>A blank white seed image is initialised with adversarial text rendered as an overlay to establish cross-modal correspondence. Optimization alternates between modalities: image perturbations are updated via projected gradient descent to disrupt block-level visual representations, while adversarial text tokens are updated via greedy substitution to maximally disrupt cross-modal fusion representations.</p>
+          <p>
+            A blank white seed image is initialized with the adversarial text rendered as an overlay to establish
+            explicit cross-modal correspondence. Optimization alternates between modalities:
+          </p>
+          <ul style="margin-top:0.5rem;">
+            <li><strong>Image perturbation</strong> — updated via projected gradient descent to disrupt block-level visual representations.</li>
+            <li><strong>Text perturbation</strong> — refined by greedy token substitution to maximize cross-modal fusion disruption.</li>
+          </ul>
+          <p style="margin-top:0.5rem;">
+            This alternating search continues until both perturbations converge to a stable adversarial configuration
+            aligned toward the target wrong diagnosis.
+          </p>
         </div>
       </div>
 
       <div class="column is-half">
         <div class="framework-card reveal">
-          <div class="card-icon">🖼️</div>
+          <div class="card-icon">🎯</div>
           <h4>③ Background-Constrained Perturbation</h4>
-          <p>MedSAM segments and isolates the region of diagnostic interest. The top-<em>k</em>=10 largest background patches are selected via dynamic programming, and adversarial perturbations are applied exclusively there. Random sub-crops of the adversarial image are aligned to the multimodal adversarial target using an ensemble of four CLIP surrogate models, keeping core medical content untouched and perturbations imperceptible (ε = 16/255).</p>
+          <p>
+            <strong>MedSAM</strong> is used to segment and isolate the diagnostically critical foreground region.
+            From the remaining background, the top-<em>k</em> largest square patches are identified via dynamic
+            programming. Adversarial perturbations are then iteratively generated exclusively within these
+            non-critical patches by:
+          </p>
+          <ul style="margin-top:0.5rem;">
+            <li>Taking random sub-crops and aligning their embeddings to the multimodal adversarial target.</li>
+            <li>Maximizing cosine similarity across an ensemble of <strong>4 CLIP surrogate models</strong>.</li>
+          </ul>
+          <p style="margin-top:0.5rem;">
+            This ensures the core clinical content (the pathology itself) is left completely untouched.
+          </p>
         </div>
       </div>
 
       <div class="column is-half">
         <div class="framework-card reveal">
           <div class="card-icon">👁️</div>
-          <h4>④ Attention Shift via Background Gate</h4>
+          <h4>④ Attention-Shift via Background Gate</h4>
           <p>
-            An auxiliary attention-based loss explicitly intervenes in attention allocation. Cross-attention weights from the final multimodal fusion block are extracted and the attention distraction loss is minimized to suppress foreground attention and amplify background attention:
+            Embedding adversarial signals in the background alone is insufficient — models still anchor predictions
+            on foreground evidence. An auxiliary <strong>Attention-Distract Loss</strong> intervenes directly:
           </p>
+          <ul style="margin-top:0.5rem;">
+            <li>Cross-attention weights between visual and textual tokens are extracted from the final fusion block.</li>
+            <li>The loss <em>suppresses</em> attention on diagnostically salient foreground regions while <em>amplifying</em> attention on adversarially perturbed background.</li>
+          </ul>
           <div class="highlight-box" style="margin-top:1rem;">
-            <strong>L<sub>attn</sub></strong> = log A<sub>fg</sub>(δ) − log A<sub>bg</sub>(δ). Minimizing this loss forces the model to anchor predictions on adversarially perturbed background regions rather than clinical evidence.
+            Result: the model produces confident, coherent, yet clinically incorrect diagnoses based entirely on malicious background cues.
           </div>
         </div>
       </div>
@@ -403,40 +454,69 @@
 </section>
 
 
-<!-- ===================== DATASET ===================== -->
-<section class="section" id="benchmark" style="padding-top:1rem;">
+<!-- ===================== DATASET & SETUP ===================== -->
+<section class="section" id="dataset" style="padding-top:1rem;">
   <div class="container is-max-desktop">
     <hr class="section-divider">
-    <h2 class="title is-3 has-text-centered">Evaluation Dataset</h2>
+    <h2 class="title is-3 has-text-centered">Dataset &amp; Experimental Setup</h2>
 
     <!-- modality tags -->
     <div class="has-text-centered reveal" style="margin-bottom:1.5rem;">
-      <span class="tag is-medium" style="background:#eaf4ee;color:#1a6b3c;border:1px solid #b2d9c0;margin:3px;">🩻 X-ray</span>
-      <span class="tag is-medium" style="background:#eaf4ee;color:#1a6b3c;border:1px solid #b2d9c0;margin:3px;">🧠 MRI</span>
-      <span class="tag is-medium" style="background:#eaf4ee;color:#1a6b3c;border:1px solid #b2d9c0;margin:3px;">🔬 CT Scan</span>
-      <span class="tag is-medium" style="background:#eaf4ee;color:#1a6b3c;border:1px solid #b2d9c0;margin:3px;">🔭 Dermoscopy</span>
-      <span class="tag is-medium" style="background:#eaf4ee;color:#1a6b3c;border:1px solid #b2d9c0;margin:3px;">🫀 Mammography</span>
-      <span class="tag is-medium" style="background:#eaf4ee;color:#1a6b3c;border:1px solid #b2d9c0;margin:3px;">📡 Ultrasound</span>
+      <span class="tag is-medium" style="background:var(--brand-tag-bg);color:var(--brand);border:1px solid var(--brand-tag-border);margin:3px;">🩻 X-Ray</span>
+      <span class="tag is-medium" style="background:var(--brand-tag-bg);color:var(--brand);border:1px solid var(--brand-tag-border);margin:3px;">🧠 MRI</span>
+      <span class="tag is-medium" style="background:var(--brand-tag-bg);color:var(--brand);border:1px solid var(--brand-tag-border);margin:3px;">🔬 CT Scan</span>
+      <span class="tag is-medium" style="background:var(--brand-tag-bg);color:var(--brand);border:1px solid var(--brand-tag-border);margin:3px;">🔊 Ultrasound</span>
+      <span class="tag is-medium" style="background:var(--brand-tag-bg);color:var(--brand);border:1px solid var(--brand-tag-border);margin:3px;">🩸 Dermoscopy</span>
+      <span class="tag is-medium" style="background:var(--brand-tag-bg);color:var(--brand);border:1px solid var(--brand-tag-border);margin:3px;">🎀 Mammography</span>
     </div>
 
     <div class="columns is-centered">
       <div class="column is-four-fifths reveal">
         <div class="content has-text-justified">
           <p>
-            We assembled a dataset of <strong>1,000 medical images</strong> with ground-truth findings drawn from publicly available sources including <strong>MIMIC-CXR</strong>, <strong>SkinCAP</strong>, and <strong>MedTrinity</strong>. The collection spans <strong>7 imaging modalities</strong> — X-ray, CT scan, MRI, dermoscopy, mammography, ultrasound — and covers 10 anatomical body parts. We evaluate transferability across <strong>6 VLMs</strong>: 2 open-source (Qwen2.5-VL 7B, InternVL 8B), 2 medical-specialized (MedVLM-R1, BioMedLLAMA-Vision), and 2 closed-source (GPT-5, Gemini-2.5-Pro-Thinking).
+            We assembled a dataset of <strong>1,000 medical images</strong> with ground-truth findings drawn from
+            <strong>MIMIC-CXR</strong>, <strong>SkinCAP</strong>, and <strong>MedTrinity</strong>, spanning seven
+            imaging modalities and ten anatomical body parts. Transferability is assessed across six VLMs:
+          </p>
+          <ul>
+            <li><strong>Open-source:</strong> Qwen2.5-VL 7B, InternVL 8B</li>
+            <li><strong>Medical-specialized:</strong> MedVLM-R1, BioMedLLAMA-Vision</li>
+            <li><strong>Closed-source:</strong> GPT-5, Gemini-2.5-Pro-Thinking</li>
+          </ul>
+          <p style="margin-top:0.75rem;">
+            The attack is optimized for <strong>300 iterations</strong> with perturbation budget <em>ε = 16/255</em>
+            (ℓ<sub>∞</sub> norm), step size 1/255, and <em>k = 10</em> background patches selected via dynamic
+            programming. Surrogate ensemble: 4 CLIP variants (ViT-L/14-336, ViT-B/16, ViT-B/32, LAION ViT-G/14).
           </p>
         </div>
       </div>
     </div>
 
-    <div class="columns is-centered reveal" style="margin-bottom:2rem;">
+    <!-- metrics explanation -->
+    <div class="columns is-centered reveal" style="margin-top:1rem;">
+      <div class="column is-four-fifths">
+        <div class="highlight-box">
+          <strong>Evaluation Metrics:</strong>
+          <span class="metric-tag">MTR</span> Medical Text Rate — LLM-as-judge score for diagnostic misdirection. &nbsp;
+          <span class="metric-tag">AvgSim</span> MedCLIP cosine similarity between original and adversarial images (imperceptibility). &nbsp;
+          <span class="metric-tag">MAS</span> Medical Attack Score — unified geometric mean of MTR and AvgSim; high only when <em>both</em> are high.
+        </div>
+      </div>
+    </div>
+
+    <!-- qualitative figure placeholder -->
+    <div class="columns is-centered reveal" style="margin-top:1.5rem;">
       <div class="column">
         <figure class="image" style="margin:0 auto;">
-          <img src="./static/images/qualitative.png" alt="Qualitative attack examples"
+          <img src="./static/images/qualitative.png" alt="Qualitative results"
                style="width:100%;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,0.08);">
         </figure>
         <p class="figure-caption">
-          <strong>Figure 2.</strong> Qualitative analysis of diagnostic misdirection induced by MedFocusLeak. In each example, the adversarial image (visually indistinguishable from the original) causes the VLM to generate a clinically plausible but incorrect diagnosis. Correct medical tokens are highlighted in <span style="color:green;font-weight:600;">green</span> and adversarially altered tokens in <span style="color:red;font-weight:600;">red</span>.
+          <strong>Figure 2.</strong> Qualitative analysis of diagnostic misdirection. Original findings (top) vs.
+          adversarial findings (bottom) for brain MRI cases. Correct clinical tokens are highlighted in
+          <span style="color:#16a34a;font-weight:700;">green</span> and adversarially altered tokens in
+          <span style="color:#dc2626;font-weight:700;">red</span>. Note that the adversarial image remains
+          visually indistinguishable from the original.
         </p>
       </div>
     </div>
@@ -455,10 +535,11 @@
       <div class="column is-four-fifths reveal">
         <div class="content has-text-justified">
           <p>
-            We evaluate <strong>MedFocusLeak</strong> against five leading targeted transfer-based adversarial attacks (AttackVLM, AttackBard, AnyAttack, M-Attack, FOA-Attack) using three metrics:
-            <strong>MTR</strong> — Medical Text adversarial Rate (LLM-as-judge diagnostic misdirection score),
-            <strong>AvgSim</strong> — average Med-CLIP cosine similarity between original and adversarial images (imperceptibility), and
-            <strong>MAS</strong> — Medical Attack Score, a unified geometric mean of both.
+            MedFocusLeak consistently outperforms all five baselines — AttackVLM, AttackBard, AnyAttack, M-Attack,
+            and FOA-Attack — across all models and modalities. Results are highlighted in
+            <span style="background:#fee2e2;padding:0 4px;border-radius:3px;">red</span> for our method.
+            Numbers in <span style="color:#1d4ed8;">blue</span> in the paper indicate statistically significant
+            improvements (paired t-test, p &lt; 0.05).
           </p>
         </div>
       </div>
@@ -468,13 +549,13 @@
     <div class="reveal">
       <div class="result-tabs">
         <button class="tab-btn active" data-tab="tab-main">Main Results</button>
-        <button class="tab-btn" data-tab="tab-ood">Human Evaluation</button>
         <button class="tab-btn" data-tab="tab-ablation">Ablation Study</button>
+        <button class="tab-btn" data-tab="tab-human">Human Evaluation</button>
       </div>
 
-      <!-- Tab: Main Results -->
+      <!-- ── Tab: Main Results ── -->
       <div class="tab-panel active" id="tab-main">
-        <p class="table-caption">Table 1. MTR / AvgSim / MAS across VLMs. Green row = MedFocusLeak (ours).</p>
+        <p class="table-caption">Table 1. Performance of different attacks (MTR / AvgSim / MAS) across six VLMs. Red rows = MedFocusLeak.</p>
         <div style="overflow-x:auto;">
           <table class="table is-bordered is-hoverable is-fullwidth"
                  style="font-size:0.82rem;border-collapse:collapse;text-align:center;">
@@ -483,7 +564,7 @@
                 <th rowspan="2" style="text-align:left;min-width:130px;vertical-align:middle;">Attack</th>
                 <th colspan="3" style="border-bottom:2px solid #888;">InternVL-8B</th>
                 <th colspan="3" style="border-bottom:2px solid #888;">QwenVL-7B</th>
-                <th colspan="3" style="border-bottom:2px solid #888;">BioMedLlama-Vision</th>
+                <th colspan="3" style="border-bottom:2px solid #888;">BioMedLlama</th>
               </tr>
               <tr style="background-color:#f5f5f5;">
                 <th>MTR</th><th>AvgSim</th><th>MAS</th>
@@ -495,24 +576,14 @@
               <tr><td style="text-align:left;">Attack Bard</td><td>0.550</td><td>0.680</td><td>0.370</td><td>0.590</td><td>0.680</td><td>0.400</td><td>0.620</td><td>0.680</td><td>0.420</td></tr>
               <tr><td style="text-align:left;">AnyAttack</td><td>0.540</td><td>0.790</td><td>0.420</td><td>0.660</td><td>0.790</td><td>0.520</td><td>0.570</td><td>0.790</td><td>0.450</td></tr>
               <tr><td style="text-align:left;">AttackVLM</td><td>0.630</td><td>0.830</td><td>0.520</td><td>0.630</td><td>0.830</td><td>0.520</td><td>0.620</td><td>0.830</td><td>0.510</td></tr>
-              <tr><td style="text-align:left;">MAttack</td><td>0.690</td><td>0.750</td><td>0.518</td><td>0.660</td><td>0.750</td><td>0.490</td><td>0.560</td><td>0.750</td><td>0.420</td></tr>
+              <tr><td style="text-align:left;">M-Attack</td><td>0.690</td><td>0.750</td><td>0.518</td><td>0.660</td><td>0.750</td><td>0.490</td><td>0.560</td><td>0.750</td><td>0.420</td></tr>
               <tr><td style="text-align:left;">FOA-Attack</td><td>0.630</td><td>0.590</td><td>0.370</td><td>0.640</td><td>0.590</td><td>0.370</td><td>0.590</td><td>0.590</td><td>0.340</td></tr>
-              <tr style="background-color:#b8dfc5;font-weight:700;">
-                <td style="text-align:left;">MedFocusLeak</td>
-                <td><strong>0.790</strong></td><td><strong>0.850</strong></td><td><strong>0.670</strong></td>
-                <td><strong>0.750</strong></td><td><strong>0.850</strong></td><td><strong>0.630</strong></td>
-                <td><strong>0.680</strong></td><td><strong>0.850</strong></td><td><strong>0.570</strong></td>
-              </tr>
+              <tr class="ours-row"><td style="text-align:left;"><strong>MedFocusLeak (Ours)</strong></td><td><strong>0.790</strong></td><td><strong>0.850</strong></td><td><strong>0.670</strong></td><td><strong>0.750</strong></td><td><strong>0.850</strong></td><td><strong>0.630</strong></td><td><strong>0.680</strong></td><td><strong>0.850</strong></td><td><strong>0.570</strong></td></tr>
             </tbody>
-          </table>
-        </div>
-        <div style="overflow-x:auto;margin-top:1rem;">
-          <table class="table is-bordered is-hoverable is-fullwidth"
-                 style="font-size:0.82rem;border-collapse:collapse;text-align:center;">
             <thead>
               <tr style="background-color:#f5f5f5;">
-                <th rowspan="2" style="text-align:left;min-width:130px;vertical-align:middle;">Attack</th>
-                <th colspan="3" style="border-bottom:2px solid #888;">Gemini 2.5 Pro Thinking</th>
+                <th rowspan="2" style="text-align:left;vertical-align:middle;">Attack</th>
+                <th colspan="3" style="border-bottom:2px solid #888;">Gemini 2.5 Pro</th>
                 <th colspan="3" style="border-bottom:2px solid #888;">MedVLM-R1</th>
                 <th colspan="3" style="border-bottom:2px solid #888;">GPT-5</th>
               </tr>
@@ -526,73 +597,114 @@
               <tr><td style="text-align:left;">Attack Bard</td><td>0.350</td><td>0.680</td><td>0.230</td><td>0.290</td><td>0.680</td><td>0.190</td><td>0.370</td><td>0.680</td><td>0.250</td></tr>
               <tr><td style="text-align:left;">AnyAttack</td><td>0.410</td><td>0.790</td><td>0.320</td><td>0.350</td><td>0.790</td><td>0.270</td><td>0.390</td><td>0.790</td><td>0.300</td></tr>
               <tr><td style="text-align:left;">AttackVLM</td><td>0.330</td><td>0.830</td><td>0.270</td><td>0.320</td><td>0.830</td><td>0.266</td><td>0.400</td><td>0.830</td><td>0.330</td></tr>
-              <tr><td style="text-align:left;">MAttack</td><td>0.310</td><td>0.750</td><td>0.240</td><td>0.330</td><td>0.750</td><td>0.233</td><td>0.340</td><td>0.750</td><td>0.220</td></tr>
+              <tr><td style="text-align:left;">M-Attack</td><td>0.310</td><td>0.750</td><td>0.240</td><td>0.330</td><td>0.750</td><td>0.233</td><td>0.340</td><td>0.750</td><td>0.220</td></tr>
               <tr><td style="text-align:left;">FOA-Attack</td><td>0.160</td><td>0.590</td><td>0.094</td><td>0.290</td><td>0.590</td><td>0.170</td><td>0.070</td><td>0.590</td><td>0.041</td></tr>
-              <tr style="background-color:#b8dfc5;font-weight:700;">
-                <td style="text-align:left;">MedFocusLeak</td>
-                <td><strong>0.480</strong></td><td><strong>0.850</strong></td><td><strong>0.400</strong></td>
-                <td><strong>0.400</strong></td><td><strong>0.850</strong></td><td><strong>0.340</strong></td>
-                <td><strong>0.480</strong></td><td><strong>0.850</strong></td><td><strong>0.400</strong></td>
-              </tr>
+              <tr class="ours-row"><td style="text-align:left;"><strong>MedFocusLeak (Ours)</strong></td><td><strong>0.480</strong></td><td><strong>0.850</strong></td><td><strong>0.400</strong></td><td><strong>0.400</strong></td><td><strong>0.850</strong></td><td><strong>0.340</strong></td><td><strong>0.480</strong></td><td><strong>0.850</strong></td><td><strong>0.400</strong></td></tr>
             </tbody>
           </table>
         </div>
+
         <div class="highlight-box" style="margin-top:1rem;">
-          On GPT-5, MedFocusLeak achieves a MAS of 0.408 — nearly doubling the strongest baseline (0.225). Even reasoning-oriented models (MedVLM-R1, Gemini 2.5 Pro Thinking) remain vulnerable.
+          On GPT-5, MedFocusLeak achieves a MAS of <strong>0.408</strong> — nearly <strong>2×</strong> the strongest
+          baseline (0.225). On InternVL, it reaches MAS <strong>0.672</strong>, far exceeding the next best 0.523.
+          Reasoning models (MedVLM-R1, Gemini 2.5 Pro Thinking) show higher robustness but are still significantly compromised.
         </div>
       </div>
 
-      <!-- Tab: Human Evaluation -->
-      <div class="tab-panel" id="tab-ood">
-        <p class="table-caption">Table 2. Human evaluation by three certified medical interns supervised by a senior expert. 1–5 scale. Cohen's κ = 0.82.</p>
-        <div style="max-width:460px;">
+      <!-- ── Tab: Ablation ── -->
+      <div class="tab-panel" id="tab-ablation">
+        <p class="table-caption">Table 2. Ablation study across QwenVL, Gemini 2.5 Pro Thinking, and MedVLM-R1.</p>
+        <div style="overflow-x:auto;">
           <table class="table is-bordered is-hoverable is-fullwidth"
-                 style="font-size:0.88rem;border-collapse:collapse;text-align:center;">
+                 style="font-size:0.85rem;border-collapse:collapse;text-align:center;">
             <thead>
               <tr style="background-color:#f5f5f5;">
-                <th style="text-align:left;">Method</th><th>ATI ↑</th><th>IQP ↑</th><th>OHAS ↑</th>
+                <th rowspan="2" style="text-align:left;min-width:200px;vertical-align:middle;">Setting</th>
+                <th colspan="3">QwenVL 7B</th>
+                <th colspan="3">Gemini 2.5 Pro</th>
+                <th colspan="3">MedVLM-R1</th>
+              </tr>
+              <tr style="background-color:#f5f5f5;">
+                <th>MTR</th><th>AvgSim</th><th>MAS</th>
+                <th>MTR</th><th>AvgSim</th><th>MAS</th>
+                <th>MTR</th><th>AvgSim</th><th>MAS</th>
               </tr>
             </thead>
             <tbody>
-              <tr><td style="text-align:left;">MAttack</td><td>3.10</td><td>3.10</td><td>3.20</td></tr>
-              <tr><td style="text-align:left;">FOA-Attack</td><td>3.30</td><td>1.50</td><td>2.80</td></tr>
-              <tr style="background-color:#b8dfc5;font-weight:700;">
-                <td style="text-align:left;">MedFocusLeak</td><td><strong>3.94</strong></td><td><strong>3.50</strong></td><td><strong>3.75</strong></td>
-              </tr>
+              <tr><td style="text-align:left;">Image perturbation only</td><td>0.47</td><td>0.79</td><td>0.37</td><td>0.26</td><td>0.79</td><td>0.20</td><td>0.28</td><td>0.79</td><td>0.22</td></tr>
+              <tr><td style="text-align:left;">Text perturbation only</td><td>0.62</td><td>0.81</td><td>0.50</td><td>0.37</td><td>0.81</td><td>0.30</td><td>0.38</td><td>0.81</td><td>0.30</td></tr>
+              <tr><td style="text-align:left;">Without attention shift</td><td>0.55</td><td>0.88</td><td>0.48</td><td>0.27</td><td>0.88</td><td>0.24</td><td>0.30</td><td>0.88</td><td>0.26</td></tr>
+              <tr><td style="text-align:left;">ε = 4</td><td>0.43</td><td>0.92</td><td>0.39</td><td>0.33</td><td>0.92</td><td>0.30</td><td>0.25</td><td>0.92</td><td>0.23</td></tr>
+              <tr><td style="text-align:left;">ε = 8</td><td>0.57</td><td>0.88</td><td>0.50</td><td>0.34</td><td>0.88</td><td>0.30</td><td>0.29</td><td>0.88</td><td>0.26</td></tr>
+              <tr class="ours-row"><td style="text-align:left;"><strong>MedFocusLeak (ε = 16)</strong></td><td><strong>0.74</strong></td><td>0.85</td><td><strong>0.63</strong></td><td><strong>0.48</strong></td><td>0.85</td><td><strong>0.40</strong></td><td><strong>0.39</strong></td><td>0.87</td><td><strong>0.33</strong></td></tr>
             </tbody>
           </table>
         </div>
         <div class="highlight-box" style="margin-top:1rem;">
-          <strong>ATI</strong> = Adversarial Text Impact &nbsp;·&nbsp; <strong>IQP</strong> = Image Quality Preservation &nbsp;·&nbsp; <strong>OHAS</strong> = Overall Human Attack Score. MedFocusLeak ranks highest on all three dimensions, with FOA-Attack scoring particularly low on IQP (1.50) due to visible distortions.
+          Joint multimodal perturbation outperforms unimodal variants. Adding attention shift boosts MAS by
+          <strong>+0.145</strong> on QwenVL. Optimal performance peaks at <strong>k = 10 patches</strong> and
+          <strong>α = 1.00</strong> step size.
         </div>
       </div>
 
-      <!-- Tab: Ablation -->
-      <div class="tab-panel" id="tab-ablation">
-        <p class="table-caption">Table 3. Ablation on key components (QwenVL-7B). Each component contributes meaningfully to the final MAS.</p>
-        <div style="max-width:420px;">
+      <!-- ── Tab: Human Evaluation ── -->
+      <div class="tab-panel" id="tab-human">
+        <p class="table-caption">Table 3. Human evaluation by 3 certified medical interns (supervised by a senior expert). Scale: 1–5.</p>
+        <div style="max-width:500px;">
           <table class="table is-bordered is-hoverable is-fullwidth"
                  style="font-size:0.9rem;border-collapse:collapse;text-align:center;">
             <thead>
               <tr style="background-color:#f5f5f5;">
-                <th style="text-align:left;">Setting</th><th>MTR</th><th>AvgSim</th><th>MAS</th>
+                <th style="text-align:left;">Method</th>
+                <th>ATI ↑</th>
+                <th>IQP ↑</th>
+                <th>OHAS ↑</th>
               </tr>
             </thead>
             <tbody>
-              <tr><td style="text-align:left;">Image perturbation only</td><td>0.47</td><td>0.79</td><td>0.37</td></tr>
-              <tr><td style="text-align:left;">Text perturbation only</td><td>0.62</td><td>0.81</td><td>0.50</td></tr>
-              <tr><td style="text-align:left;">Without attention shift</td><td>0.55</td><td>0.88</td><td>0.48</td></tr>
-              <tr><td style="text-align:left;">ε = 4</td><td>0.43</td><td>0.92</td><td>0.39</td></tr>
-              <tr><td style="text-align:left;">ε = 8</td><td>0.57</td><td>0.88</td><td>0.50</td></tr>
-              <tr style="background-color:#b8dfc5;font-weight:700;">
-                <td style="text-align:left;">MedFocusLeak (full, ε=16)</td><td><strong>0.74</strong></td><td>0.85</td><td><strong>0.63</strong></td>
-              </tr>
+              <tr><td style="text-align:left;">M-Attack</td><td>3.1</td><td>3.1</td><td>3.2</td></tr>
+              <tr><td style="text-align:left;">FOA-Attack</td><td>3.3</td><td>1.5</td><td>2.8</td></tr>
+              <tr class="ours-row"><td style="text-align:left;"><strong>MedFocusLeak (Ours)</strong></td><td><strong>3.94</strong></td><td><strong>3.5</strong></td><td><strong>3.75</strong></td></tr>
             </tbody>
           </table>
         </div>
         <div class="highlight-box" style="margin-top:1rem;">
-          The attention-shift component alone lifts MAS from 0.48 → 0.63 on QwenVL. Without multimodal noise (image-only), MAS drops to 0.37 — confirming that coordinated image-text perturbations are essential.
+          Inter-annotator agreement: Cohen's κ = <strong>0.82</strong> (strong agreement).
+          ATI = Adversarial Text Impact; IQP = Image Quality Preservation; OHAS = Overall Human Attack Score.
+          FOA-Attack sacrifices image quality (IQP 1.5) for text impact — MedFocusLeak achieves both simultaneously.
         </div>
+      </div>
+
+    </div>
+
+    <!-- Ablation plots placeholder -->
+    <div class="columns is-centered reveal" style="margin-top:2.5rem;">
+      <div class="column">
+        <figure class="image" style="margin:0 auto;">
+          <img src="./static/images/ablation_plots.png" alt="Ablation plots"
+               style="width:100%;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,0.08);">
+        </figure>
+        <p class="figure-caption">
+          <strong>Figure 3.</strong> (a) MAS vs. number of background patches — peaks at k=10. (b) MAS vs. number of
+          optimization steps — MedFocusLeak scales more steeply than baselines. (c) Attack success rate (ASR) across
+          model architectures. (d) Attack efficiency (MAS vs. runtime) — attention shift meaningfully improves
+          effectiveness without redundant overhead.
+        </p>
+      </div>
+    </div>
+
+    <!-- Defense robustness placeholder -->
+    <div class="columns is-centered reveal" style="margin-top:1.5rem;">
+      <div class="column is-four-fifths">
+        <figure class="image" style="margin:0 auto;">
+          <img src="./static/images/defense_plot.png" alt="Defense robustness"
+               style="width:100%;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,0.08);">
+        </figure>
+        <p class="figure-caption">
+          <strong>Figure 4.</strong> Robustness of MedFocusLeak vs. M-Attack under five input-level defenses
+          (Gaussian noise, Average filter, JPEG compression, Comdefend, Medium blur) across all six VLMs.
+          MedFocusLeak maintains substantially higher MTR and AvgSim under all defenses.
+        </p>
       </div>
     </div>
 
@@ -606,10 +718,11 @@
     <hr class="section-divider">
     <h2 class="title">BibTeX</h2>
     <pre><code>@inproceedings{ghosh2026medfocusleak,
-      title={When Background Matters: Breaking Medical Vision Language Models by Transferable Attack},
-      author={Akash Ghosh and Tajamul Ashraf and Rishu Kumar Singh and Numan Saeed and Sriparna Saha and Xiuying Chen and Salman Khan},
-      booktitle={Proceedings of the 64th Annual Meeting of the Association for Computational Linguistics (ACL)},
-      year={2026},
+  title     = {When Background Matters: Breaking Medical Vision Language Models by Transferable Attack},
+  author    = {Akash Ghosh and Subhadip Baidya and Sriparna Saha and Xiuying Chen},
+  booktitle = {Proceedings of the 64th Annual Meeting of the Association for Computational Linguistics (ACL)},
+  year      = {2026},
+  url       = {https://arxiv.org/abs/0000.00000},
 }</code></pre>
   </div>
 </section>
@@ -619,10 +732,10 @@
 <footer class="footer">
   <div class="container">
     <div class="content has-text-centered">
-      <a class="icon-link" href="#">
+      <a class="icon-link" href="https://arxiv.org/abs/0000.00000">
         <i class="fas fa-file-pdf"></i>
       </a>
-      <a class="icon-link" href="#">
+      <a class="icon-link" href="https://github.com/" style="margin-left:0.5rem;">
         <i class="fab fa-github"></i>
       </a>
     </div>
@@ -654,7 +767,7 @@
 
   /* ── Scroll reveal ── */
   const observer = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
   }, { threshold: 0.1 });
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
@@ -673,25 +786,18 @@
       if (p < 1) requestAnimationFrame(step);
     })(start);
   }
-
   const counterObs = new IntersectionObserver(entries => {
     entries.forEach(e => {
-      if (e.isIntersecting) {
-        animateCounter(e.target);
-        counterObs.unobserve(e.target);
-      }
+      if (e.isIntersecting) { animateCounter(e.target); counterObs.unobserve(e.target); }
     });
   }, { threshold: 0.5 });
   document.querySelectorAll('.stat-number').forEach(el => counterObs.observe(el));
 
-  /* ── Smooth scroll for nav links ── */
+  /* ── Smooth scroll ── */
   document.querySelectorAll('.sticky-nav a').forEach(a => {
     a.addEventListener('click', e => {
       const target = document.querySelector(a.getAttribute('href'));
-      if (target) {
-        e.preventDefault();
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
+      if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
     });
   });
 </script>
